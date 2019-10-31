@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/margin_8"
+    android:paddingRight="@dimen/margin_15"
+    android:paddingLeft="@dimen/margin_15"
+    android:paddingBottom="@dimen/margin_8">
+
+    <ImageView
+        android:id="@+id/img_stie_logo"
+        android:layout_width="36dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/site" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/margin_15"
+        android:layout_toRightOf="@id/img_stie_logo"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_site_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选点线路名称A"
+            android:textColor="@color/black_3"
+            android:textSize="@dimen/size_14" />
+
+        <TextView
+            android:id="@+id/tv_site_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/black_9"
+            android:textSize="@dimen/size_12" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_site_detail"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/grey_round_5"
+        android:gravity="center"
+        android:text="查看详情"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="@dimen/size_14" />
+</LinearLayout>

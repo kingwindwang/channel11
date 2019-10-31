@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list1">
+        <item>普通点</item>
+        <item>终止点</item>
+    </string-array>
+    <string-array name="list3">
+        <item>10KV</item>
+        <item>220V</item>
+        <item>400V</item>
+    </string-array>
+    <string-array name="list4">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+    <string-array name="list5">
+        <item>是-400V</item>
+        <item>是-220V</item>
+        <item>否</item>
+    </string-array>
+    <string-array name="list6">
+        <item>转角耐张</item>
+        <item>直线耐张</item>
+        <item>直线</item>
+        <item>转角</item>
+        <item>分支（400V分400V、220V分220V）</item>
+        <item>转换（400V转220V）</item>
+        <item>终端</item>
+        <item>门杆</item>
+    </string-array>
+    <string-array name="list7">
+        <item>公路</item>
+        <item>通讯</item>
+        <item>河流</item>
+        <item>电力</item>
+        <item>无</item>
+    </string-array>
+    <string-array name="list7_0">
+        <item>铁路</item>
+        <item>高速公路</item>
+        <item>国道</item>
+        <item>省道</item>
+        <item>县道</item>
+        <item>乡道</item>
+    </string-array>
+    <string-array name="list7_3">
+        <item>10KV</item>
+        <item>400V</item>
+        <item>220V</item>
+        <item>普通照明线</item>
+    </string-array>
+</resources>
