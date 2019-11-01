@@ -43,14 +43,14 @@ public class SelectActivity extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 position = i;
-                if (title.equals("跨越/穿越/带电")){
-                    if (i == 0)
-                        dialog(contents[position], getResources().getStringArray(R.array.list7_0));
-                    else if (i == 3)
-                        dialog(contents[position], getResources().getStringArray(R.array.list7_3));
-                    else
-                        adapter.notifyDataSetChanged();
-                }
+//                if (title.equals("跨越/穿越/带电")){
+//                    if (i == 0)
+//                        dialog(contents[position], getResources().getStringArray(R.array.list7_0));
+//                    else if (i == 3)
+//                        dialog(contents[position], getResources().getStringArray(R.array.list7_3));
+//                    else
+//                        adapter.notifyDataSetChanged();
+//                }
                 adapter.notifyDataSetChanged();
             }
         });
