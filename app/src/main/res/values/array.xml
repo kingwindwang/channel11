@@ -37,10 +37,20 @@
         <item>门杆</item>
     </string-array>
     <string-array name="list7">
-        <item>公路</item>
+        <!--<item>公路-</item>-->
+        <item>公路-铁路</item>
+        <item>公路-高速公路</item>
+        <item>公路-国道</item>
+        <item>公路-省道</item>
+        <item>公路-县道</item>
+        <item>公路-乡道</item>
         <item>通讯</item>
         <item>河流</item>
-        <item>电力</item>
+        <!--<item>电力-</item>-->
+        <item>电力-10KV</item>
+        <item>电力-400V</item>
+        <item>电力-220V</item>
+        <item>电力-普通照明线</item>
         <item>无</item>
     </string-array>
     <string-array name="list7_0">
