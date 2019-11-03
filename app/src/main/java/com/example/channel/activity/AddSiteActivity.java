@@ -45,7 +45,8 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
 
     private List<SiteContentModelImpl> siteContentModelList = new ArrayList<>();
     private AddSiteAdapter addSiteAdapter;
-    private String materials = "";
+    private String materials = "";//材料
+    private String add_materials = "";//补充材料
     private int rod_number = 0;//-2表示不可操作；=-1表示编辑；其他 判断当前工单里这是第几个点，如果是第二个点就传1，第三个点就传2，以此类推
     private String rod_number_parent = "";//空表示不是子节点，有表示为子节点
     private String rod_numStr = "";
@@ -143,14 +144,23 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         }
                         break;
                     case 7://选择材料
+                    case 8://附加材料
                         bundle = new Bundle();
-                        bundle.putString("materials", materials);
+                        if (i == 7){
+                            bundle.putString("materials", materials);
+                            bundle.putInt("type", 1);
+                        }else {
+                            bundle.putString("materials", add_materials);
+                            bundle.putInt("type", 2);
+                        }
+
                         bundle.putInt("rod_number", rod_number);
+
                         in = new Intent(AddSiteActivity.this, MaterialActivity.class);
                         in.putExtras(bundle);
                         startActivityForResult(in, App.SITE_MATERIAL);
                         break;
-                    case 8://定位拍照
+                    case 9://定位拍照
                         bundle = new Bundle();
                         bundle.putString("address", CommonUtil.getStr(addr));
                         bundle.putString("lont", CommonUtil.getStr(longtitude));
@@ -184,7 +194,10 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             siteContentModelList.get(position).setContents(c);
             addSiteAdapter.notifyDataSetChanged();
         }else if (requestCode == App.SITE_MATERIAL && resultCode == App.SITE_MATERIAL){//材料
-            materials = data.getStringExtra("materials");
+            if (position == 7)
+                materials = data.getStringExtra("materials");
+            else
+                add_materials = data.getStringExtra("materials");
         }else if (requestCode == App.SITE_PHONE && resultCode == App.SITE_PHONE){//拍照定位
             addr = data.getStringExtra("address");
             longtitude = data.getStringExtra("lont");

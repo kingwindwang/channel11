@@ -58,4 +58,25 @@ public class CommonUtil {
             return "";
         return GsonUtils.GsonString(material1List);
     }
+
+    public static int getInt(String str){
+        if (isNumeric(str))
+            return Integer.valueOf(str);
+        else
+            return 0;
+    }
+
+    /**
+     * 利用正则表达式判断字符串是否是数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if( !isNum.matches() ){
+            return false;
+        }
+        return true;
+    }
 }

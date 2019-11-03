@@ -62,7 +62,7 @@ public class SiteContentModelImpl implements SiteContentModel {
         List<SiteContentModelImpl> siteContentModels = new ArrayList<>();
 
         String[] names = {"施工班组", getNames1(), "电压等级", "杆号", "是否有同杆", "杆型", "跨越/穿越/带电"
-                , "添加材料", "附件及定位"};
+                , "添加材料", "补充材料", "附件及定位"};
         Resources res =context.getResources();
         List<String[]> strings = new ArrayList<>();
         UserModeImpl user = App.application.getUser();
@@ -92,6 +92,7 @@ public class SiteContentModelImpl implements SiteContentModel {
         strings.add(res.getStringArray(R.array.list5));
         strings.add(res.getStringArray(R.array.list6));
         strings.add(res.getStringArray(R.array.list7));
+        strings.add(listnull);
         strings.add(listnull);
         strings.add(listnull);
         for (int i = 0; i < names.length; i++){
