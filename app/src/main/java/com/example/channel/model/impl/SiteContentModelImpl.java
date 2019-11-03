@@ -35,11 +35,13 @@ public class SiteContentModelImpl implements SiteContentModel {
     private int selectPosition;
     private Context context;
     private int rod_number;
+    private String rod_number_parent;
     private SiteDetailModelImpl site;
 
-    public SiteContentModelImpl(Context context, int rod_number, SiteDetailModelImpl site){
+    public SiteContentModelImpl(Context context, int rod_number, String rod_number_parent, SiteDetailModelImpl site){
         this.context = context;
         this.rod_number = rod_number;
+        this.rod_number_parent = rod_number_parent;
         this.site = site;
     }
 
@@ -68,19 +70,24 @@ public class SiteContentModelImpl implements SiteContentModel {
         String[] dep = {user.getDep_name()};
         strings.add(dep);
         String[] rod_num = {rod_number == -1 ? site.getRod_number() : rod_number +""};
-        if (rod_num[0] .equals("0")){
-            if (site != null && !TextUtils.isEmpty(site.getLine_name())){
-                String[] lineName = {site.getLine_name()};
-                strings.add(lineName);
-            }else {
-                strings.add(listnull);
-            }
+        if (TextUtils.isEmpty(rod_number_parent)){
+            if (rod_num[0] .equals("0")){
+                if (site != null && !TextUtils.isEmpty(site.getLine_name())){
+                    String[] lineName = {site.getLine_name()};
+                    strings.add(lineName);
+                }else {
+                    strings.add(listnull);
+                }
 
-        }else {
-            strings.add(res.getStringArray(R.array.list1));
-        }
+            }else {
+                strings.add(res.getStringArray(R.array.list1));
+            }
+        }else
+            strings.add(res.getStringArray(R.array.list1_1));
+
         strings.add(res.getStringArray(R.array.list3));
-        String[] rod_num1 = {rod_num[0], "利旧", "变电站"};
+        String parent = TextUtils.isEmpty(rod_number_parent) ? "" : rod_number_parent+"-";
+        String[] rod_num1 = {parent + rod_num[0], parent + "利旧", parent + "变电站"};
         strings.add(rod_num1);
         strings.add(res.getStringArray(R.array.list5));
         strings.add(res.getStringArray(R.array.list6));

@@ -92,6 +92,7 @@ public class TaskActivity extends BaseActivity{
     void OnAddSite(){
         Bundle bundle = new Bundle();
         bundle.putInt("rod_number", 0);
+        bundle.putString("rod_number_parent", "");
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
@@ -111,6 +112,7 @@ public class TaskActivity extends BaseActivity{
         Bundle bundle = new Bundle();
         bundle.putString("task_id", task_id);
         bundle.putInt("state", state);
+        bundle.putString("rod_number_parent", "");
         gotoActivity(SiteDetailActivity.class, false, bundle);
     }
 

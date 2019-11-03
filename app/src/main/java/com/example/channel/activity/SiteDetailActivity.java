@@ -2,6 +2,7 @@ package com.example.channel.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -42,20 +43,28 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
     private List<SiteDetailModelImpl> siteDetailModelList = new ArrayList<>();
     private boolean isAdd = true;
     private LoadDialog loadDialog;
+    private String rod_number_parent = "";
+    private String point_id_parent = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addView(R.layout.list, true);
+        rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
         task_id = getIntent().getExtras().getString("task_id");
         state = getIntent().getExtras().getInt("state");
         if (state == -1){
             tv_submit.setVisibility(View.GONE);
         }
+        if (!TextUtils.isEmpty(rod_number_parent)){
+            tv_add.setVisibility(View.VISIBLE);
+            tv_add.setText("子选点");
+            point_id_parent = getIntent().getExtras().getString("point_id_parent");
+        }
         tv_title.setText("选点列表");
         loadDialog = new LoadDialog(this);
         siteDetailPresent = new SiteDetailPresentImpl(this, new SiteDetailModelImpl());
-        siteDetailPresent.showSiteDetail(task_id, true);
+        siteDetailPresent.showSiteDetail(task_id, point_id_parent, true);
         EventBus.getDefault().register(this);
 
     }
@@ -87,12 +96,23 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
     void onSubmit(){
         if (!isAdd){
             goDel();
-        }else {
+        }else {//添加新选点
             Bundle bundle = new Bundle();
             bundle.putInt("rod_number", siteDetailModelList.size());
             bundle.putString("task_id", task_id);
+            bundle.putString("rod_number_parent", "");
             gotoActivity(AddSiteActivity.class, false, bundle);
         }
+    }
+
+    //添加子选点
+    @OnClick(R.id.tv_add)
+    void onAddSonPoint(){
+        Bundle bundle = new Bundle();
+        bundle.putInt("rod_number", siteDetailModelList.size());
+        bundle.putString("rod_number_parent", rod_number_parent);
+        bundle.putString("point_id_parent", point_id_parent);
+        gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
     private void goDel(){
@@ -119,12 +139,14 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         goAddSite(position, -1);
     }
 
+    //修改查询选点
     private void goAddSite(int position, int rod_number){
         SiteDetailModelImpl site = siteDetailModelList.get(position);
         String s = GsonUtils.GsonString(site);
         Bundle bundle = new Bundle();
         bundle.putString("site", s);
         bundle.putInt("rod_number", rod_number);
+        bundle.putString("rod_number_parent", "");
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
@@ -142,7 +164,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
 
     @Subscribe
     public void onEventMainThread(MainModelImpl a){
-        siteDetailPresent.showSiteDetail(task_id, false);
+        siteDetailPresent.showSiteDetail(task_id, point_id_parent, false);
     }
 
     @Override

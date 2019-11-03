@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SiteDetailModel {
 
-    void findSiteDetail(String task_id, OnSiteDetailListener onSiteDetailListener);
+    void findSiteDetail(String task_id, String pid, OnSiteDetailListener onSiteDetailListener);
     void delSite(String task_id, OnSiteDetailListener onSiteDetailListener);
 
     interface OnSiteDetailListener{

@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements MainView {
     void OnAddSite(){
         Bundle bundle = new Bundle();
         bundle.putInt("rod_number", 0);
+        bundle.putString("rod_number_parent", "");
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
@@ -96,6 +97,7 @@ public class MainActivity extends BaseActivity implements MainView {
         Bundle bundle = new Bundle();
         bundle.putString("task_id", task_id);
         bundle.putInt("state", state);
+        bundle.putString("rod_number_parent", "");
         gotoActivity(SiteDetailActivity.class, false, bundle);
     }
 

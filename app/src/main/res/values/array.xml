@@ -4,6 +4,11 @@
         <item>普通点</item>
         <item>终止点</item>
     </string-array>
+    <string-array name="list1_1">
+        <item>起始点</item>
+        <item>普通点</item>
+        <item>终止点</item>
+    </string-array>
     <string-array name="list3">
         <item>10KV</item>
         <item>220V</item>

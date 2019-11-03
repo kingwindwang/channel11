@@ -39,6 +39,9 @@ public class BaseActivity extends AppCompatActivity {
     @BindView(R.id.tv_submit)
     public TextView tv_submit;
 
+    @BindView(R.id.tv_add)
+    public TextView tv_add;
+
     @BindView(R.id.rl_title)
     public RelativeLayout rl_title;
 

@@ -19,9 +19,9 @@ public class SiteDetailPresentImpl implements SiteDetailPresent, SiteDetailModel
     }
 
     @Override
-    public void showSiteDetail(String task_id, boolean isShowLoad) {
+    public void showSiteDetail(String task_id, String pid, boolean isShowLoad) {
         this.isShowLoad = isShowLoad;
-        siteDetailModel.findSiteDetail(task_id, this);
+        siteDetailModel.findSiteDetail(task_id, pid, this);
         if (isShowLoad)
             siteDetailView.showProgress();
     }

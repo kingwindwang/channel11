@@ -2,6 +2,7 @@ package com.example.channel.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -45,24 +46,35 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     private List<SiteContentModelImpl> siteContentModelList = new ArrayList<>();
     private AddSiteAdapter addSiteAdapter;
     private String materials = "";
-    private int rod_number = 0;//=-1表示编辑；其他 判断当前工单里这是第几个点，如果是第二个点就传1，第三个点就传2，以此类推
+    private int rod_number = 0;//-2表示不可操作；=-1表示编辑；其他 判断当前工单里这是第几个点，如果是第二个点就传1，第三个点就传2，以此类推
+    private String rod_number_parent = "";//空表示不是子节点，有表示为子节点
+    private String rod_numStr = "";
     private SiteContentPresent siteContentPresent;
     private String latitude,longtitude,addr,url;//维度，经度，地址，图片路径
     private SiteDetailModelImpl site;
     private String task_id ="";
     private LoadDialog loadDialog;
+    private String point_id;
+    private String point_id_parent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addView(R.layout.activity_add_site, true);
         rod_number = getIntent().getExtras().getInt("rod_number");
-
+        rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
+        if (!TextUtils.isEmpty(rod_number_parent)){
+            point_id_parent = getIntent().getExtras().getString("point_id_parent");
+        }
         if (rod_number > 0)
             task_id = getIntent().getExtras().getString("task_id");
         if (rod_number < 0 ){
             if (rod_number == -2)
                 tv_submit.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(rod_number_parent)){
+                tv_add.setVisibility(View.VISIBLE);
+                tv_add.setText("子选点");
+            }
             site = GsonUtils.GsonToBean(getIntent().getExtras().getString("site"), SiteDetailModelImpl.class);
             materials = CommonUtil.getMaterials(site.getMaterials());
             latitude = site.getLat();
@@ -72,7 +84,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             task_id = site.getTask_id();
         }
         loadDialog = new LoadDialog(this);
-        siteContentPresent = new SiteContentPresentImpl(this, new SiteContentModelImpl(AddSiteActivity.this, rod_number == -2 ? -1 : rod_number, site));
+        siteContentPresent = new SiteContentPresentImpl(this, new SiteContentModelImpl(AddSiteActivity.this, rod_number == -2 ? -1 : rod_number, rod_number_parent, site));
         siteContentPresent.showSiteContent();
     }
 
@@ -117,7 +129,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         }
                         bundle = new Bundle();
                         bundle.putString("title", siteContentModels.get(i).getName());
-                        if (rod_number == 0){
+                        if (rod_number == 0 && TextUtils.isEmpty(rod_number_parent)){
                             bundle.putString("content", siteContentModels.get(i).getContents()[0]);
                             in = new Intent(AddSiteActivity.this, EditActivity.class);
                             in.putExtras(bundle);
@@ -163,6 +175,9 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
         if (requestCode == App.SITE_LIST && resultCode == App.SITE_LIST){//列表
             siteContentModelList.get(position).setSelectPosition(data.getIntExtra("position", 0));
             addSiteAdapter.notifyDataSetChanged();
+            if (position == 3){
+                rod_numStr = siteContentModelList.get(position).getContents()[data.getIntExtra("position", 0)];
+            }
         }else if (requestCode == App.SITE_EDIT && resultCode == App.SITE_EDIT){//输入框
             siteContentModelList.get(position).setSelectPosition(0);
             String[] c = {data.getStringExtra("content")};
@@ -181,10 +196,20 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     @OnClick(R.id.tv_submit)
     void OnSubmit(){
         if (rod_number == -1 && url.contains("http"))
-            siteContentPresent.submit(rodNum(), longtitude, latitude, ImageUtil.getImgName(url), addr,
+            siteContentPresent.submit(rodNum(), point_id_parent, longtitude, latitude, ImageUtil.getImgName(url), addr,
                     materials, siteContentModelList, site.getPoint_id(), site.getTask_id(), true);
         else
             siteContentPresent.uploadImage(url, true);
+    }
+
+    @OnClick(R.id.tv_add)
+    void OnSonPointList(){
+        Bundle bundle = new Bundle();
+        bundle.putString("task_id", task_id);
+        bundle.putInt("state", rod_number < 0 ? -1 : 0);
+        bundle.putString("rod_number_parent", site.getRod_number());
+        bundle.putString("point_id_parent", site.getPoint_id());
+        gotoActivity(SiteDetailActivity.class, false, bundle);
     }
 
     private int rodNum(){
@@ -206,7 +231,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
 
     @Override
     public void uploadImg(String images) {
-        siteContentPresent.submit(rod_number == -1 ? rodNum() : rod_number, longtitude, latitude,
+        siteContentPresent.submit(rod_number == -1 ? rodNum() : rod_number, rod_number_parent, longtitude, latitude,
                 images, addr, materials, siteContentModelList, site == null ? "" : site.getPoint_id(), task_id, false);
     }
 

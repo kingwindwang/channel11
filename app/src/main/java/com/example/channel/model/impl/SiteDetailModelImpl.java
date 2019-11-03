@@ -1,5 +1,7 @@
 package com.example.channel.model.impl;
 
+import android.text.TextUtils;
+
 import com.example.channel.App;
 import com.example.channel.https.HttpCallBack;
 import com.example.channel.https.HttpManager;
@@ -40,12 +42,17 @@ public class SiteDetailModelImpl implements SiteDetailModel {
 
     private List<SiteDetailModelImpl> siteDetailModels;
     @Override
-    public void findSiteDetail(String task_id, OnSiteDetailListener onSiteDetailListener) {
+    public void findSiteDetail(String task_id, String pid, OnSiteDetailListener onSiteDetailListener) {
         siteDetailModels = new ArrayList<>();
         HttpManager httpManager = HttpManager.getInstance();
         Map<String, Object> params = new HashMap<>();
         params.put("task_id", task_id);
-        params.put("method", "point_list");
+        if (TextUtils.isEmpty(pid))//父选点列表
+            params.put("method", "point_list");
+        else {//子选点列表
+            params.put("method", "add_point_list");
+            params.put("pid", pid);
+        }
         httpManager.callData(params, false, new HttpCallBack() {
             @Override
             public void onSuccess(Object success) {

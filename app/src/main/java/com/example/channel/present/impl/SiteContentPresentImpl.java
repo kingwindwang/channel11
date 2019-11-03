@@ -53,7 +53,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
     }
 
     @Override
-    public void submit(int rod_number, String lont, String lat, String images, String address, String materials, List<SiteContentModelImpl> siteContentModelList, String point_id, String task_id, boolean isShowLoad) {
+    public void submit(int rod_number, String pid, String lont, String lat, String images, String address, String materials, List<SiteContentModelImpl> siteContentModelList, String point_id, String task_id, boolean isShowLoad) {
         if (!this.isShowLoad){
             this.isShowLoad = isShowLoad;
             if (isShowLoad)
@@ -78,7 +78,8 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
             param.put("task_id", task_id);
             param.put("point_type", siteContentModelList.get(1).getContents()[siteContentModelList.get(1).getSelectPosition()]);
         }
-
+        if (!TextUtils.isEmpty(pid))
+            param.put("pid", pid);
         param.put("voltage_level", siteContentModelList.get(2).getContents()[siteContentModelList.get(2).getSelectPosition()]);
         param.put("rod_number", siteContentModelList.get(3).getContents()[siteContentModelList.get(3).getSelectPosition()]);
         param.put("same_rod_flag", siteContentModelList.get(4).getContents()[siteContentModelList.get(4).getSelectPosition()]);

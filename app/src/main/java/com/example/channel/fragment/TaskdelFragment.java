@@ -99,6 +99,7 @@ public class TaskdelFragment extends Fragment implements TaskView{
         Bundle bundle = new Bundle();
         bundle.putString("task_id", task_id);
         bundle.putInt("state", state);
+        bundle.putString("rod_number_parent", "");
         in.putExtras(bundle);
         getActivity().startActivity(in);
         getActivity().overridePendingTransition(R.anim.anim_right_in,R.anim.anim_left_out);
