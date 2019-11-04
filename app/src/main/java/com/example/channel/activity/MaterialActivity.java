@@ -51,6 +51,7 @@ public class MaterialActivity extends BaseActivity{
         }
         tv_submit.setText("添加");
         type = getIntent().getIntExtra("type", 1);
+        materials = getIntent().getStringExtra("materials");
         if (type == 1)
             tv_title.setText("材料列表");
         else{
@@ -60,7 +61,7 @@ public class MaterialActivity extends BaseActivity{
         }
 
 
-        materials = getIntent().getStringExtra("materials");
+
         setAdapter();
     }
 

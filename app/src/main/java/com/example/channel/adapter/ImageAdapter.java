@@ -1,6 +1,8 @@
 package com.example.channel.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.channel.R;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,13 +22,14 @@ import java.util.List;
 
 public class ImageAdapter extends BaseAdapter{
 
-    private List<String> imgs;
+    private ArrayList<String> imgs;
     private LayoutInflater inflater;
-    private Context context;
+    private Activity context;
 
-    public ImageAdapter(Context context, List<String> imgs){
+    public ImageAdapter(Activity context, ArrayList<String> imgs){
         this.imgs = imgs;
         inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -62,9 +67,11 @@ public class ImageAdapter extends BaseAdapter{
 
     private void show(String url, ImageView img){
         try {
-            Glide.with(context).load(url).into(img);
+            if (!url.contains("http"))
+                url = "file://" + url;
+            Picasso.with(context).load(url).into(img);
         }catch (Exception e){
-
+            Log.d("s", e.getMessage());
         }
     }
 }

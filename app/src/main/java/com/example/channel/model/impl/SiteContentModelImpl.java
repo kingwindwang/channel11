@@ -160,6 +160,7 @@ public class SiteContentModelImpl implements SiteContentModel {
     public void uploadImage(ArrayList<String> urls, OnListener listener) {
         HttpManager httpManager = HttpManager.getInstance();
         HttpServer httpServer = httpManager.retrofit.create(HttpServer.class);
+        StringBuffer buffer = new StringBuffer();
         for (String url : urls){
             if (TextUtils.isEmpty(url)){
                 listener.onFail("文件不能为空");
@@ -182,7 +183,12 @@ public class SiteContentModelImpl implements SiteContentModel {
                     try {
                         Map<String, Object> map = GsonUtils.GsonToMaps(response.body().string());
                         if ((Double) map.get("state") == 1){
-                            listener.onSuccess(map.get("content"));
+                            if (buffer.length() > 0)
+                                buffer.append(";");
+                            buffer.append(map.get("content"));
+                            if (buffer.toString().split(";").length == urls.size())
+                                listener.onSuccess(buffer.toString());
+
                         }else {
                             listener.onFail((String) map.get("message"));
                         }

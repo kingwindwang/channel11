@@ -49,14 +49,10 @@ import butterknife.OnClick;
 
 public class CameraActivity extends BaseActivity{
 
-	@BindView(R.id.focus)
-	public ImageView focus;
 	@BindView(R.id.gv_img)
 	public GridView gv_img;
 	@BindView(R.id.tv)
 	public TextView tv;
-	@BindView(R.id.ok)
-	public TextView ok;
 
 	private ImageCaptureManager captureManager; // 相机拍照处理类
 	private Location mLocationService;
@@ -65,7 +61,7 @@ public class CameraActivity extends BaseActivity{
 	private ArrayList<String> urls;
 	private int rod_number;
 	private ImageAdapter imageAdapter;
-	private int select;
+	private int select = -1;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -90,7 +86,8 @@ public class CameraActivity extends BaseActivity{
 			tv_submit.setVisibility(View.GONE);
 		}
 		tv_submit.setText("上传");
-		ok.setVisibility(View.GONE);
+		tv_add.setVisibility(View.GONE);
+		tv_add.setText("提交");
 
 		urls = getIntent().getExtras().getStringArrayList("urls");
 		if (urls != null && urls.size() > 0){
@@ -123,14 +120,14 @@ public class CameraActivity extends BaseActivity{
 		}
 	}
 
-	@OnClick({R.id.tv_submit, R.id.ok})
+	@OnClick({R.id.tv_submit, R.id.tv_add})
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_submit:
 				select = -1;
 				showDialog("上传图片", "拍照", "图库", 1);
 				break;
-			case R.id.ok:
+			case R.id.tv_add:
 				Intent in = new Intent();
 				in.putExtra("address", addr);
 				in.putExtra("lont", longtitude);
@@ -152,25 +149,26 @@ public class CameraActivity extends BaseActivity{
 		} else if (resultCode == RESULT_OK && requestCode == 2){
 			url = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT).get(0);
 		}
-		if (select == -1)
-			urls.add(url);
-		else{
-            urls.remove(select);
-            urls.add(select, url);
-        }
-		show(2);
+		if (!TextUtils.isEmpty(url))
+			if (select == -1)
+				urls.add(url);
+			else{
+				urls.remove(select);
+				urls.add(select, url);
+			}
+		show(1);
 	}
 
 	//type=1添加修改；tpye=2查看，不启动定位
 	private void show(int type){
 		try {
 			if (imageAdapter == null){
-				imageAdapter = new ImageAdapter(this, urls);
+				imageAdapter = new ImageAdapter(CameraActivity.this, urls);
 				gv_img.setAdapter(imageAdapter);
 			}else
 				imageAdapter.notifyDataSetChanged();
 			if (rod_number != -2 && type == 1){
-				ok.setVisibility(View.VISIBLE);
+				tv_add.setVisibility(View.VISIBLE);
 				if (!mLocationService.isStart())
 					mLocationService.start();
 			}
@@ -199,15 +197,7 @@ public class CameraActivity extends BaseActivity{
 	private void showDialog(String title, String left, String right, int type){
 		AlertDialog alertDialog2 = new AlertDialog.Builder(CameraActivity.this)
 				.setTitle(title)
-				.setPositiveButton(left, new DialogInterface.OnClickListener() {//添加"Yes"按钮
-					@Override
-					public void onClick(DialogInterface dialogInterface, int i) {
-						if (type != 3)
-							openCamera();
-					}
-				})
-
-				.setNegativeButton(right, new DialogInterface.OnClickListener() {//添加取消
+				.setPositiveButton(right, new DialogInterface.OnClickListener() {//添加"Yes"按钮
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						if (type == 3){
@@ -218,7 +208,14 @@ public class CameraActivity extends BaseActivity{
 							intent.setSelectModel(SelectModel.SINGLE);
 							startActivityForResult(intent, 2);
 						}
+					}
+				})
 
+				.setNegativeButton(left, new DialogInterface.OnClickListener() {//添加取消
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						if (type != 3)
+							openCamera();
 					}
 				})
 				.create();
