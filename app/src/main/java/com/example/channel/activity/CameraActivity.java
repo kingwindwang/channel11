@@ -11,7 +11,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.baidu.location.LocationClientOption;
 import com.bumptech.glide.Glide;
 import com.example.channel.App;
 import com.example.channel.R;
+import com.example.channel.adapter.ImageAdapter;
 import com.example.channel.utils.ImageUtil;
 import com.example.channel.utils.Location;
 import com.foamtrace.photopicker.ImageCaptureManager;
@@ -34,7 +38,9 @@ import com.foamtrace.photopicker.intent.PhotoPickerIntent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -45,6 +51,8 @@ public class CameraActivity extends BaseActivity{
 
 	@BindView(R.id.focus)
 	public ImageView focus;
+	@BindView(R.id.gv_img)
+	public GridView gv_img;
 	@BindView(R.id.tv)
 	public TextView tv;
 	@BindView(R.id.ok)
@@ -53,8 +61,11 @@ public class CameraActivity extends BaseActivity{
 	private ImageCaptureManager captureManager; // 相机拍照处理类
 	private Location mLocationService;
 
-	private String latitude,longtitude,addr,url;//维度，经度，地址，图片路径
+	private String latitude,longtitude,addr;//维度，经度，地址，图片路径
+	private ArrayList<String> urls;
 	private int rod_number;
+	private ImageAdapter imageAdapter;
+	private int select;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -80,12 +91,13 @@ public class CameraActivity extends BaseActivity{
 		}
 		tv_submit.setText("上传");
 		ok.setVisibility(View.GONE);
-		url = getIntent().getExtras().getString("url");
-		if (!TextUtils.isEmpty(url)){
+
+		urls = getIntent().getExtras().getStringArrayList("urls");
+		if (urls != null && urls.size() > 0){
 			addr = getIntent().getExtras().getString("address");
 			longtitude = getIntent().getExtras().getString("lont");
 			latitude = getIntent().getExtras().getString("lat");
-			show();
+			show(2);
 			showTv();
 		}
 		// 初始化 LocationClient
@@ -98,6 +110,8 @@ public class CameraActivity extends BaseActivity{
 		option.setLocationPurpose(LocationClientOption.BDLocationPurpose.Sport);
 		// 设置定位参数
 		mLocationService.setLocationOption(option);
+
+
 	}
 
 	@Override
@@ -113,42 +127,15 @@ public class CameraActivity extends BaseActivity{
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_submit:
-//				ImageConfig config = new ImageConfig();
-//				config.minHeight = 400;
-//				config.minWidth = 400;
-//				config.mimeType = new String[]{"image/jpeg", "image/png"}; // 图片类型 image/gif ...
-//				config.minSize = 1 * 1024 ; // 1Mb 图片大小
-//				PhotoPickerIntent intent = new PhotoPickerIntent(CameraActivity.this);
-//				intent.setSelectModel(SelectModel.SINGLE);
-//				intent.setShowCarema(true); // 是否显示拍照， 默认false
-//				intent.setImageConfig(config);
-//				startActivityForResult(intent, 2);
-				AlertDialog alertDialog2 = new AlertDialog.Builder(this)
-						.setTitle("上传图片")
-						.setPositiveButton("拍照", new DialogInterface.OnClickListener() {//添加"Yes"按钮
-							@Override
-							public void onClick(DialogInterface dialogInterface, int i) {
-								openCamera();
-							}
-						})
-
-						.setNegativeButton("图库", new DialogInterface.OnClickListener() {//添加取消
-							@Override
-							public void onClick(DialogInterface dialogInterface, int i) {
-								PhotoPickerIntent intent = new PhotoPickerIntent(CameraActivity.this);
-								intent.setSelectModel(SelectModel.SINGLE);
-								startActivityForResult(intent, 2);
-							}
-						})
-						.create();
-				alertDialog2.show();
+				select = -1;
+				showDialog("上传图片", "拍照", "图库", 1);
 				break;
 			case R.id.ok:
 				Intent in = new Intent();
 				in.putExtra("address", addr);
 				in.putExtra("lont", longtitude);
 				in.putExtra("lat", latitude);
-				in.putExtra("url", url);
+				in.putStringArrayListExtra("urls", urls);
 				setResult(App.SITE_PHONE, in);
 				back();
 				break;
@@ -159,32 +146,84 @@ public class CameraActivity extends BaseActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-//		if(resultCode == RESULT_OK && requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO) {
-//			if(captureManager.getCurrentPhotoPath() != null) {
-//				captureManager.galleryAddPic();
-//				url = captureManager.getCurrentPhotoPath();
-//			}
-//		}
+		String url = "";
 		if (resultCode == RESULT_OK && requestCode == PHOTO_REQUEST_CAREMA){
 			url = ImageUtil.getRealFilePath(this, imageUri);
-		}
-		else if (resultCode == RESULT_OK && requestCode == 2){
+		} else if (resultCode == RESULT_OK && requestCode == 2){
 			url = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT).get(0);
 		}
-		show();
+		if (select == -1)
+			urls.add(url);
+		else{
+            urls.remove(select);
+            urls.add(select, url);
+        }
+		show(2);
 	}
 
-	private void show(){
+	//type=1添加修改；tpye=2查看，不启动定位
+	private void show(int type){
 		try {
-			Glide.with(this).load(url).into(focus);
-			if (rod_number != -2){
+			if (imageAdapter == null){
+				imageAdapter = new ImageAdapter(this, urls);
+				gv_img.setAdapter(imageAdapter);
+			}else
+				imageAdapter.notifyDataSetChanged();
+			if (rod_number != -2 && type == 1){
 				ok.setVisibility(View.VISIBLE);
-				mLocationService.start();
+				if (!mLocationService.isStart())
+					mLocationService.start();
 			}
+			gv_img.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					select = position;
+					showDialog("是否删除", "取消", "删除", 3);
+					return true;
+				}
+			});
+			gv_img.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					select = position;
+					showDialog("替换图片", "拍照", "图库", 2);
+				}
+			});
 
 		}catch (Exception e){
 
 		}
+	}
+
+	//type 1：上传拍照；2：修改拍照；3：删除
+	private void showDialog(String title, String left, String right, int type){
+		AlertDialog alertDialog2 = new AlertDialog.Builder(CameraActivity.this)
+				.setTitle(title)
+				.setPositiveButton(left, new DialogInterface.OnClickListener() {//添加"Yes"按钮
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						if (type != 3)
+							openCamera();
+					}
+				})
+
+				.setNegativeButton(right, new DialogInterface.OnClickListener() {//添加取消
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						if (type == 3){
+							urls.remove(select);
+							show(1);
+						}else {
+							PhotoPickerIntent intent = new PhotoPickerIntent(CameraActivity.this);
+							intent.setSelectModel(SelectModel.SINGLE);
+							startActivityForResult(intent, 2);
+						}
+
+					}
+				})
+				.create();
+		alertDialog2.show();
+
 	}
 
 	private Uri imageUri;

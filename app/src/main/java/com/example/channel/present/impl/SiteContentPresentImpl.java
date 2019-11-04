@@ -53,7 +53,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
     }
 
     @Override
-    public void submit(int rod_number, String pid, String lont, String lat, String images, String address, String materials, List<SiteContentModelImpl> siteContentModelList, String point_id, String task_id, boolean isShowLoad) {
+    public void submit(int rod_number, String pid, String lont, String lat, String images, String address, String materials, String add_materials, List<SiteContentModelImpl> siteContentModelList, String point_id, String task_id, boolean isShowLoad) {
         if (!this.isShowLoad){
             this.isShowLoad = isShowLoad;
             if (isShowLoad)
@@ -90,15 +90,16 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
         param.put("images", images);
         param.put("address", address);
         param.put("materials", getMaterialStr(materials));
+        param.put("add_materials", add_materials);
         siteContentModel.submit(param, this);
     }
 
     @Override
-    public void uploadImage(String url, boolean isShowLoad) {
+    public void uploadImage(ArrayList<String> urls, boolean isShowLoad) {
         this.isShowLoad = isShowLoad;
         if (isShowLoad)
             siteView.showProgress();
-        siteContentModel.uploadImage(url, this);
+        siteContentModel.uploadImage(urls, this);
     }
 
     private String getMaterialStr(String materials){

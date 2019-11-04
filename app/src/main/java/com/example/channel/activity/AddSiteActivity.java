@@ -51,7 +51,8 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     private String rod_number_parent = "";//空表示不是子节点，有表示为子节点
     private String rod_numStr = "";
     private SiteContentPresent siteContentPresent;
-    private String latitude,longtitude,addr,url;//维度，经度，地址，图片路径
+    private String latitude,longtitude,addr;//维度，经度，地址
+    private ArrayList<String> urls = new ArrayList<>();//图片路径
     private SiteDetailModelImpl site;
     private String task_id ="";
     private LoadDialog loadDialog;
@@ -81,12 +82,20 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             latitude = site.getLat();
             longtitude = site.getLont();
             addr = site.getAddress();
-            url = HttpManager.IMG_URL + site.getImages();
+            getUrls();
             task_id = site.getTask_id();
         }
         loadDialog = new LoadDialog(this);
         siteContentPresent = new SiteContentPresentImpl(this, new SiteContentModelImpl(AddSiteActivity.this, rod_number == -2 ? -1 : rod_number, rod_number_parent, site));
         siteContentPresent.showSiteContent();
+    }
+
+    private void getUrls(){
+        String[] u = site.getImages().split(";");
+        urls = new ArrayList<>();
+        for (String url : u){
+            urls.add(HttpManager.IMG_URL + url);
+        }
     }
 
 
@@ -165,7 +174,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         bundle.putString("address", CommonUtil.getStr(addr));
                         bundle.putString("lont", CommonUtil.getStr(longtitude));
                         bundle.putString("lat", CommonUtil.getStr(latitude));
-                        bundle.putString("url", CommonUtil.getStr(url));
+                        bundle.putStringArrayList("urls", urls);
                         bundle.putInt("rod_number", rod_number);
                         in = new Intent(AddSiteActivity.this, CameraActivity.class);
                         in.putExtras(bundle);
@@ -202,17 +211,17 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             addr = data.getStringExtra("address");
             longtitude = data.getStringExtra("lont");
             latitude = data.getStringExtra("lat");
-            url = data.getStringExtra("url");
+            urls = data.getStringArrayListExtra("urls");
         }
     }
 
     @OnClick(R.id.tv_submit)
     void OnSubmit(){
-        if (rod_number == -1 && url.contains("http"))
-            siteContentPresent.submit(rodNum(), point_id_parent, longtitude, latitude, ImageUtil.getImgName(url), addr,
-                    materials, siteContentModelList, site.getPoint_id(), site.getTask_id(), true);
+        if (rod_number == -1 && urls.size() > 0 && urls.get(0).contains("http"))
+            siteContentPresent.submit(rodNum(), point_id_parent, longtitude, latitude, ImageUtil.getImgNames(urls), addr,
+                    materials, add_materials, siteContentModelList, site.getPoint_id(), site.getTask_id(), true);
         else
-            siteContentPresent.uploadImage(url, true);
+            siteContentPresent.uploadImage(urls, true);
     }
 
     @OnClick(R.id.tv_add)
@@ -245,7 +254,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     @Override
     public void uploadImg(String images) {
         siteContentPresent.submit(rod_number == -1 ? rodNum() : rod_number, rod_number_parent, longtitude, latitude,
-                images, addr, materials, siteContentModelList, site == null ? "" : site.getPoint_id(), task_id, false);
+                images, addr, materials, add_materials, siteContentModelList, site == null ? "" : site.getPoint_id(), task_id, false);
     }
 
     @Override

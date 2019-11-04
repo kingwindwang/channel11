@@ -157,44 +157,47 @@ public class SiteContentModelImpl implements SiteContentModel {
     }
 
     @Override
-    public void uploadImage(String url, OnListener listener) {
+    public void uploadImage(ArrayList<String> urls, OnListener listener) {
         HttpManager httpManager = HttpManager.getInstance();
         HttpServer httpServer = httpManager.retrofit.create(HttpServer.class);
-        if (TextUtils.isEmpty(url)){
-            listener.onFail("文件不能为空");
-            return;
-        }
-        File file = new File(url);
-        if (!file.exists()){
-            listener.onFail("文件不存在");
-            return;
-        }
-        RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), file);
-        MultipartBody.Part part =MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        RequestBody description = RequestBody.create( MediaType.parse("multipart/form-data"), "file_upload");
-        // 执行请求
-        Call<ResponseBody> call = httpServer.saveImage(part, description);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call,
-                                   Response<ResponseBody> response) {
-                try {
-                    Map<String, Object> map = GsonUtils.GsonToMaps(response.body().string());
-                    if ((Double) map.get("state") == 1){
-                        listener.onSuccess(map.get("content"));
-                    }else {
-                        listener.onFail((String) map.get("message"));
+        for (String url : urls){
+            if (TextUtils.isEmpty(url)){
+                listener.onFail("文件不能为空");
+                return;
+            }
+            File file = new File(url);
+            if (!file.exists()){
+                listener.onFail("文件不存在");
+                return;
+            }
+            RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), file);
+            MultipartBody.Part part =MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            RequestBody description = RequestBody.create( MediaType.parse("multipart/form-data"), "file_upload");
+            // 执行请求
+            Call<ResponseBody> call = httpServer.saveImage(part, description);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call,
+                                       Response<ResponseBody> response) {
+                    try {
+                        Map<String, Object> map = GsonUtils.GsonToMaps(response.body().string());
+                        if ((Double) map.get("state") == 1){
+                            listener.onSuccess(map.get("content"));
+                        }else {
+                            listener.onFail((String) map.get("message"));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                listener.onFail(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    listener.onFail(t.getMessage());
+                }
+            });
+        }
+
     }
 
     public String getName() {

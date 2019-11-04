@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -160,6 +161,16 @@ public class ImageUtil {
 			fileName = temp[temp.length - 1];
 		}
 		return fileName;
+	}
+
+	public static String getImgNames(ArrayList<String> urls){
+		StringBuffer buffer = new StringBuffer();
+		for (String url : urls){
+			if (buffer.length() > 0)
+				buffer.append(";");
+			buffer.append(getImgName(url));
+		}
+		return buffer.toString();
 	}
 
 	/**

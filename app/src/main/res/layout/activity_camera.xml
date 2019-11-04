@@ -11,6 +11,14 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY" />
 
+    <GridView
+        android:id="@+id/gv_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="80dp"
+        android:stretchMode="spacingWidthUniform"
+        android:numColumns="3"/>
+
 
     <TextView
         android:id="@+id/tv"
