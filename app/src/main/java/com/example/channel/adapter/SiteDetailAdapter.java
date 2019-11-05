@@ -75,20 +75,20 @@ public class SiteDetailAdapter extends BaseAdapter {
             holder.img_dian3.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_gray));
             holder.img_dian4.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_gray));
             holder.tv_site_pos.setTextColor(context.getResources().getColor(R.color.text_green));
-        }else if (site.getPoint_type().equals("普通点")){
-            holder.img_circle.setImageDrawable(context.getResources().getDrawable(R.drawable.circle_blue));
-            holder.img_dian1.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
-            holder.img_dian2.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
-            holder.img_dian3.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
-            holder.img_dian4.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
-            holder.tv_site_pos.setTextColor(context.getResources().getColor(R.color.text_blue));
-        }else {
+        }else if (site.getPoint_type().equals("终止点")){
             holder.tv_site_pos.setTextColor(context.getResources().getColor(R.color.text_red));
             holder.img_circle.setImageDrawable(context.getResources().getDrawable(R.drawable.circle_red));
             holder.img_dian1.setVisibility(View.INVISIBLE);
             holder.img_dian2.setVisibility(View.INVISIBLE);
             holder.img_dian3.setVisibility(View.INVISIBLE);
             holder.img_dian4.setVisibility(View.INVISIBLE);
+        }else {
+            holder.img_circle.setImageDrawable(context.getResources().getDrawable(R.drawable.circle_blue));
+            holder.img_dian1.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
+            holder.img_dian2.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
+            holder.img_dian3.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
+            holder.img_dian4.setImageDrawable(context.getResources().getDrawable(R.drawable.dian_blue));
+            holder.tv_site_pos.setTextColor(context.getResources().getColor(R.color.text_blue));
         }
         if (!isAdd)
             holder.tv_site_edit.setVisibility(View.INVISIBLE);

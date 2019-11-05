@@ -66,7 +66,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
         if (!TextUtils.isEmpty(point_id)){//修改
             param.put("method", "update_point");
             param.put("point_id", point_id);
-        }else if (rod_number == 0){//添加起始点
+        }else if (rod_number == 0 && TextUtils.isEmpty(pid)){//添加起始点
             param.put("method", "create_task");
             param.put("user_id", user.getUser_id());
             param.put("user_name", user.getName());

@@ -58,10 +58,11 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         }
         if (!TextUtils.isEmpty(rod_number_parent)){
             tv_add.setVisibility(View.VISIBLE);
-            tv_add.setText("子选点");
+            tv_add.setText("添加子选点");
+            tv_title.setText("子选点列表");
             point_id_parent = getIntent().getExtras().getString("point_id_parent");
-        }
-        tv_title.setText("选点列表");
+        }else
+            tv_title.setText("选点列表");
         loadDialog = new LoadDialog(this);
         siteDetailPresent = new SiteDetailPresentImpl(this, new SiteDetailModelImpl());
         siteDetailPresent.showSiteDetail(task_id, point_id_parent, true);
@@ -112,6 +113,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         bundle.putInt("rod_number", siteDetailModelList.size());
         bundle.putString("rod_number_parent", rod_number_parent);
         bundle.putString("point_id_parent", point_id_parent);
+        bundle.putString("task_id", task_id);
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
@@ -146,7 +148,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         Bundle bundle = new Bundle();
         bundle.putString("site", s);
         bundle.putInt("rod_number", rod_number);
-        bundle.putString("rod_number_parent", "");
+        bundle.putString("rod_number_parent", rod_number_parent);
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 

@@ -34,6 +34,7 @@ public class SiteDetailModelImpl implements SiteDetailModel {
     private String address;// $_REQUEST["address"];   定位地址
     private String images;// $_REQUEST["images"];   图片名称（随机uuid.jpg）
     private String materials;// $_REQUEST["materials"];   材料列表，格式如下：材料1:数量1;材料2:数量2;....
+    private String add_materials;//附加材料
     private String line1;
     private String line2;
     private String line3;
@@ -237,5 +238,13 @@ public class SiteDetailModelImpl implements SiteDetailModel {
 
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
+    }
+
+    public String getAdd_materials() {
+        return add_materials;
+    }
+
+    public void setAdd_materials(String add_materials) {
+        this.add_materials = add_materials;
     }
 }
