@@ -217,7 +217,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
 
     @OnClick(R.id.tv_submit)
     void OnSubmit(){
-        if (rod_number == -1 && urls.size() > 0 && urls.get(0).contains("http"))
+        if (rod_number == -1 && urls.size() > 0 && isUpdateUrl())
             siteContentPresent.submit(rodNum(), point_id_parent, longtitude, latitude, ImageUtil.getImgNames(urls), addr,
                     materials, add_materials, siteContentModelList, site.getPoint_id(), site.getTask_id(), true);
         else
@@ -272,5 +272,13 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     public void hideProgress() {
         if (loadDialog != null)
             loadDialog.dismiss();
+    }
+
+    private boolean isUpdateUrl(){
+        for (String url : urls){
+            if (!url.contains("http"))
+                return true;
+        }
+        return false;
     }
 }

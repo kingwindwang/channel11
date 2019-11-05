@@ -172,21 +172,24 @@ public class CameraActivity extends BaseActivity{
 				if (!mLocationService.isStart())
 					mLocationService.start();
 			}
-			gv_img.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-					select = position;
-					showDialog("是否删除", "取消", "删除", 3);
-					return true;
-				}
-			});
-			gv_img.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					select = position;
-					showDialog("替换图片", "拍照", "图库", 2);
-				}
-			});
+			if (rod_number != -2){
+				gv_img.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+					@Override
+					public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+						select = position;
+						showDialog("是否删除", "取消", "删除", 3);
+						return true;
+					}
+				});
+				gv_img.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+						select = position;
+						showDialog("替换图片", "拍照", "图库", 2);
+					}
+				});
+			}
+
 
 		}catch (Exception e){
 

@@ -96,6 +96,10 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
 
     @Override
     public void uploadImage(ArrayList<String> urls, boolean isShowLoad) {
+        if (urls == null || urls.size() == 0){
+            siteView.fial("请上传附件");
+            return;
+        }
         this.isShowLoad = isShowLoad;
         if (isShowLoad)
             siteView.showProgress();
