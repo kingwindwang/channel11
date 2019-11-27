@@ -24,6 +24,12 @@
         <item>8</item>
         <item>9</item>
     </string-array>
+    <string-array name="list4_1">
+        <item>0</item>
+        <item>利旧</item>
+        <item>变电站</item>
+        <item>变压器</item>
+    </string-array>
     <string-array name="list5">
         <item>是-400V</item>
         <item>是-220V</item>

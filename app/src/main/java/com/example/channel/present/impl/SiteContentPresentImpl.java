@@ -72,19 +72,19 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
             param.put("user_name", user.getName());
             param.put("dep_id", user.getDep_id());
             param.put("dep_name", user.getDep_name());
-            param.put("line_name", siteContentModelList.get(1).getContents()[0]);
+            param.put("line_name", siteContentModelList.get(1).getContents());
         }else{//添加站点
             param.put("method", "create_point");
             param.put("task_id", task_id);
-            param.put("point_type", siteContentModelList.get(1).getContents()[siteContentModelList.get(1).getSelectPosition()]);
+            param.put("point_type", siteContentModelList.get(1).getContents());
         }
         if (!TextUtils.isEmpty(pid))
             param.put("pid", pid);
-        param.put("voltage_level", siteContentModelList.get(2).getContents()[siteContentModelList.get(2).getSelectPosition()]);
-        param.put("rod_number", siteContentModelList.get(3).getContents()[siteContentModelList.get(3).getSelectPosition()]);
-        param.put("same_rod_flag", siteContentModelList.get(4).getContents()[siteContentModelList.get(4).getSelectPosition()]);
-        param.put("rod_type", siteContentModelList.get(5).getContents()[siteContentModelList.get(5).getSelectPosition()]);
-        param.put("cross", siteContentModelList.get(6).getContents()[siteContentModelList.get(6).getSelectPosition()]);
+        param.put("voltage_level", siteContentModelList.get(2).getContents());
+        param.put("rod_number", siteContentModelList.get(3).getContents());
+        param.put("same_rod_flag", siteContentModelList.get(4).getContents());
+        param.put("rod_type", siteContentModelList.get(5).getContents());
+        param.put("cross", siteContentModelList.get(6).getContents());
         param.put("lont", lont);
         param.put("lat", lat);
         param.put("images", images);

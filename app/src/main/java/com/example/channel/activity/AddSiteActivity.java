@@ -128,32 +128,35 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         if (rod_number == -2)
                             break;
                         if (i == 3){
-                            if (!(rod_number == 0 || siteContentModels.get(1).getContents()[siteContentModels.get(1).getSelectPosition()].equals("终止点") || (site != null && site.getPoint_type().equals("起始点")))){
+                            if (!(rod_number == 0 || siteContentModels.get(1).getContents().equals("终止点") || (site != null && site.getPoint_type().equals("起始点")))){
                                 return;
                             }
                         }
                         bundle = new Bundle();
-                        bundle.putInt("position", siteContentModels.get(i).getSelectPosition());
-                        bundle.putStringArray("content", siteContentModels.get(i).getContents());
+                        bundle.putString("content", siteContentModels.get(i).getContents());
                         bundle.putString("title", siteContentModels.get(i).getName());
+                        bundle.putInt("position", i);
                         in = new Intent(AddSiteActivity.this, SelectActivity.class);
                         in.putExtras(bundle);
                         startActivityForResult(in, App.SITE_LIST);
                         break;
                     case 1://输入框
+                    case 10://输入框
                         if (rod_number < 0 || !TextUtils.isEmpty(rod_number_parent)){
                             break;
                         }
                         bundle = new Bundle();
                         bundle.putString("title", siteContentModels.get(i).getName());
-                        if (rod_number == 0){
-                            bundle.putString("content", siteContentModels.get(i).getContents()[0]);
+                        if (rod_number == 0 || i == 10){
+                            bundle.putString("content", siteContentModels.get(i).getContents());
+                            bundle.putString("title", siteContentModels.get(i).getName());
                             in = new Intent(AddSiteActivity.this, EditActivity.class);
                             in.putExtras(bundle);
                             startActivityForResult(in, App.SITE_EDIT);
                         }else {
-                            bundle.putInt("position", siteContentModels.get(i).getSelectPosition());
-                            bundle.putStringArray("content", siteContentModels.get(i).getContents());
+                            bundle.putInt("position", i);
+                            bundle.putString("content", siteContentModels.get(i).getContents());
+                            bundle.putString("title", siteContentModels.get(i).getName());
                             in = new Intent(AddSiteActivity.this, SelectActivity.class);
                             in.putExtras(bundle);
                             startActivityForResult(in, App.SITE_LIST);
@@ -199,15 +202,10 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
         if (data == null)
             return;
         if (requestCode == App.SITE_LIST && resultCode == App.SITE_LIST){//列表
-            siteContentModelList.get(position).setSelectPosition(data.getIntExtra("position", 0));
+            siteContentModelList.get(position).setContents(data.getStringExtra("content"));
             addSiteAdapter.notifyDataSetChanged();
-            if (position == 3){
-                rod_numStr = siteContentModelList.get(position).getContents()[data.getIntExtra("position", 0)];
-            }
         }else if (requestCode == App.SITE_EDIT && resultCode == App.SITE_EDIT){//输入框
-            siteContentModelList.get(position).setSelectPosition(0);
-            String[] c = {data.getStringExtra("content")};
-            siteContentModelList.get(position).setContents(c);
+            siteContentModelList.get(position).setContents(data.getStringExtra("content"));
             addSiteAdapter.notifyDataSetChanged();
         }else if (requestCode == App.SITE_MATERIAL && resultCode == App.SITE_MATERIAL){//材料
             if (position == 7)

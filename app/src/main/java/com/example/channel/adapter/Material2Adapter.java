@@ -70,6 +70,12 @@ public class Material2Adapter extends BaseAdapter {
                 context.jiajian(i, material1s.get(i).getMaterialNum()+1);
             }
         });
+        holder.materialNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.editNum(i, material1s.get(i).getMaterialNum());
+            }
+        });
         return view;
     }
 

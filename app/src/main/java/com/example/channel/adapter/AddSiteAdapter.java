@@ -57,11 +57,10 @@ public class AddSiteAdapter extends BaseAdapter {
         }else
             holder = (ViewHolder) view.getTag();
         holder.tv_name.setText(siteContentModels.get(i).getName());
-        if (siteContentModels.get(i).getSelectPosition() > -1)
-            holder.tv_content.setText(siteContentModels.get(i).getContents()[siteContentModels.get(i).getSelectPosition()]);
+        holder.tv_content.setText(siteContentModels.get(i).getContents());
         if (i == 0)
             holder.img_arrow.setVisibility(View.INVISIBLE);
-        if (i == 1 && rod_number == 0)
+        if ((i == 1 && rod_number == 0) || i == 10)
             holder.tv_content.setHint("请输入");
 
         return view;

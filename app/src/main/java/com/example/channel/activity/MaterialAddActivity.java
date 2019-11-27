@@ -14,6 +14,7 @@ import com.example.channel.adapter.Material2Adapter;
 import com.example.channel.model.impl.MaterialModelImpl;
 import com.example.channel.present.impl.MaterialPresentImpl;
 import com.example.channel.utils.LoadDialog;
+import com.example.channel.utils.MaterialNumDialog;
 import com.example.channel.view.MaterialAddView;
 
 import java.util.ArrayList;
@@ -69,6 +70,21 @@ public class MaterialAddActivity extends BaseActivity implements MaterialAddView
     }
 
     public void jiajian(int position, int num){
+        updateNum(position, num);
+    }
+
+    public void editNum(int position, int num){
+        MaterialNumDialog dialog = new MaterialNumDialog(this);
+        dialog.builder(num);
+        dialog.setOnLintener(new MaterialNumDialog.OnLintener() {
+            @Override
+            public void onOk(int newNum) {
+                updateNum(position, newNum);
+            }
+        });
+    }
+
+    private void updateNum(int position, int num){
         materialModelList.get(parentPosition).getList().get(position).setMaterialNum(num);
         update2(false);
     }

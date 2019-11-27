@@ -39,6 +39,7 @@ public class SiteDetailModelImpl implements SiteDetailModel {
     private String line2;
     private String line3;
     private String line4;
+    private String remark;
 
 
     private List<SiteDetailModelImpl> siteDetailModels;
@@ -246,5 +247,13 @@ public class SiteDetailModelImpl implements SiteDetailModel {
 
     public void setAdd_materials(String add_materials) {
         this.add_materials = add_materials;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

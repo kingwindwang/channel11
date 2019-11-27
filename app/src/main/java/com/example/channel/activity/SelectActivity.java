@@ -3,6 +3,7 @@ package com.example.channel.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class SelectActivity extends BaseActivity{
 
     private int position = -1;
     private String[] contents;
+    private String content;
     private String title;
     private ListAdapter adapter;
 
@@ -34,51 +36,57 @@ public class SelectActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         addView(R.layout.list, true);
         position = getIntent().getExtras().getInt("position");
-        contents = getIntent().getExtras().getStringArray("content");
+        content = getIntent().getExtras().getString("content");
         title = getIntent().getExtras().getString("title");
+        getList();
         tv_title.setText(title);
         adapter = new ListAdapter();
         lv_select.setAdapter(adapter);
         lv_select.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                position = i;
-//                if (title.equals("跨越/穿越/带电")){
-//                    if (i == 0)
-//                        dialog(contents[position], getResources().getStringArray(R.array.list7_0));
-//                    else if (i == 3)
-//                        dialog(contents[position], getResources().getStringArray(R.array.list7_3));
-//                    else
-//                        adapter.notifyDataSetChanged();
-//                }
+                if (position == 6)
+                    content += ";" + contents[i];
+                else
+                    content = contents[i];
                 adapter.notifyDataSetChanged();
             }
         });
     }
 
+    private void getList(){
+        Resources res = getResources();
+        switch (position){
+            case 1://点类型（可选：普通点、终止点）
+                contents = res.getStringArray(R.array.list1);
+                break;
+            case 2://电压等级-（选择10Kv、220V、400V）
+                contents = res.getStringArray(R.array.list3);
+                break;
+            case 3://杆号
+                if (content.equals("0"))
+                    contents = res.getStringArray(R.array.list4_1);
+                else
+                    contents = res.getStringArray(R.array.list4);
+                break;
+            case 4://是否有同杆-（选择是、否-400V、否-220V）
+                contents = res.getStringArray(R.array.list5);
+                break;
+            case 5://杆型：转角耐张、直线耐张、直线、转角、分支（400V分400V、220V分220V）、转换（400V转220V）、终端、门杆
+                contents = res.getStringArray(R.array.list6);
+                break;
+            case 6://跨越/穿越/带电（选择公路、通讯、河流、电力）
+                contents = res.getStringArray(R.array.list7);
+                break;
+        }
+    }
+
     @OnClick(R.id.tv_submit)
     void onSubmit(){
         Intent in = new Intent();
-        in.putExtra("position", position);
+        in.putExtra("content", content);
         setResult(App.SITE_LIST, in);
         back();
-    }
-
-    private void dialog(String name, String[] items4){
-
-        AlertDialog alertDialog4 = new AlertDialog.Builder(this)
-                .setTitle("选择您喜欢的老湿")
-                .setIcon(R.mipmap.ic_launcher)
-                .setSingleChoiceItems(items4, 0, new DialogInterface.OnClickListener() {//添加单选框
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        contents[position] = items4[i];
-                        adapter.notifyDataSetChanged();
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create();
-        alertDialog4.show();
     }
 
     public class ListAdapter extends BaseAdapter{
@@ -111,10 +119,21 @@ public class SelectActivity extends BaseActivity{
                 holder = (ViewHolder) view.getTag();
 
             holder.tv_name.setText(contents[i]);
-            if (position == i)
-                holder.img_select.setVisibility(View.VISIBLE);
-            else
+            if (position != 6){
+                if (contents[i].equals(content))
+                    holder.img_select.setVisibility(View.VISIBLE);
+                else
+                    holder.img_select.setVisibility(View.GONE);
+            }else {
+                String[] c = content.split(";");
                 holder.img_select.setVisibility(View.GONE);
+                for (String a : c){
+                    if (contents[i].equals(a)){
+                        holder.img_select.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                }
+            }
             return view;
         }
 
