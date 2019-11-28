@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.channel.App;
 import com.example.channel.R;
+import com.example.channel.utils.CommonUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,6 +32,8 @@ public class SelectActivity extends BaseActivity{
     private String content;
     private String title;
     private ListAdapter adapter;
+    private String rod_number_parent;
+    private String rod_num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,10 @@ public class SelectActivity extends BaseActivity{
         position = getIntent().getExtras().getInt("position");
         content = getIntent().getExtras().getString("content");
         title = getIntent().getExtras().getString("title");
+        if (position == 3){
+            rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
+            rod_num = getIntent().getExtras().getString("rod_number");
+        }
         getList();
         tv_title.setText(title);
         adapter = new ListAdapter();
@@ -45,9 +53,10 @@ public class SelectActivity extends BaseActivity{
         lv_select.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (position == 6)
-                    content += ";" + contents[i];
-                else
+                if (position == 6){
+                    if (!isSelect(contents[i], true))
+                        content += ";" + contents[i];
+                } else
                     content = contents[i];
                 adapter.notifyDataSetChanged();
             }
@@ -64,9 +73,11 @@ public class SelectActivity extends BaseActivity{
                 contents = res.getStringArray(R.array.list3);
                 break;
             case 3://杆号
-                if (content.equals("0"))
-                    contents = res.getStringArray(R.array.list4_1);
-                else
+                if (content.equals("0") || !CommonUtil.isNumeric(content)) {
+                    String parent = TextUtils.isEmpty(rod_number_parent) ? "" : rod_number_parent+"-";
+                    String[] rod_num1 = {parent + rod_num, parent + "利旧", parent + "变电站", parent + "变压器"};
+                    contents = rod_num1;
+                } else
                     contents = res.getStringArray(R.array.list4);
                 break;
             case 4://是否有同杆-（选择是、否-400V、否-220V）
@@ -125,14 +136,17 @@ public class SelectActivity extends BaseActivity{
                 else
                     holder.img_select.setVisibility(View.GONE);
             }else {
-                String[] c = content.split(";");
                 holder.img_select.setVisibility(View.GONE);
-                for (String a : c){
-                    if (contents[i].equals(a)){
-                        holder.img_select.setVisibility(View.VISIBLE);
-                        break;
-                    }
+                if (isSelect(contents[i], false)){
+                    holder.img_select.setVisibility(View.VISIBLE);
                 }
+//                String[] c = content.split(";");
+//                for (String a : c){
+//                    if (contents[i].equals(a)){
+//                        holder.img_select.setVisibility(View.VISIBLE);
+//                        break;
+//                    }
+//                }
             }
             return view;
         }
@@ -141,5 +155,38 @@ public class SelectActivity extends BaseActivity{
             TextView tv_name;
             ImageView img_select;
         }
+    }
+
+    /**
+     *
+     * @param sel：选中的选项
+     * @param isItem：是否为点击列表选择操作
+     * @return
+     */
+    private boolean isSelect(String sel, boolean isItem){
+        String[] c = content.split(";");
+        for (int i = 0; i < c.length; i++){
+            if (sel.equals(c[i])){
+                if (isItem){
+                    delContent(i);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void delContent(int a){
+        String[] c = content.split(";");
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < c.length; i++){
+            if (i != a){
+                if (!TextUtils.isEmpty(buffer)){
+                    buffer.append(";");
+                }
+                buffer.append(c[i]);
+            }
+        }
+        content = buffer.toString();
     }
 }

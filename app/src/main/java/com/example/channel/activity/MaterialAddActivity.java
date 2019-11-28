@@ -48,6 +48,9 @@ public class MaterialAddActivity extends BaseActivity implements MaterialAddView
         loadDialog = new LoadDialog(this);
         materialPresent = new MaterialPresentImpl(this, new MaterialModelImpl(materials));
         materialPresent.showMaterial(true);
+
+        tv_add.setVisibility(View.VISIBLE);
+        tv_add.setText("帮助");
     }
 
     @Override
@@ -103,6 +106,11 @@ public class MaterialAddActivity extends BaseActivity implements MaterialAddView
     @OnClick(R.id.tv_submit)
     void OnSubmit(){
         materialPresent.submit(materialModelList);
+    }
+
+    @OnClick(R.id.tv_add)
+    void OnHelp(){
+        gotoActivity(HelpActivity.class);
     }
 
     @Override

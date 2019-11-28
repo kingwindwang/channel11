@@ -63,11 +63,11 @@ public class SiteContentModelImpl implements SiteContentModel {
         List<SiteContentModelImpl> siteContentModels = new ArrayList<>();
 
         String[] names = {"施工班组", getNames1(), "电压等级", "杆号", "是否有同杆", "杆型", "跨越/穿越/带电"
-                , "添加材料", "补充材料", "附件及定位", "说明"};
+                , "添加材料", "补充材料", "附件及定位", "档距"};
         Resources res =context.getResources();
         for(int i = 0; i < names.length; i++){
             SiteContentModelImpl siteContentModel = new SiteContentModelImpl();
-            siteContentModel.setName(name);
+            siteContentModel.setName(names[i]);
             siteContentModel.setContents(getContent(i));
             siteContentModels.add(siteContentModel);
         }
@@ -139,14 +139,17 @@ public class SiteContentModelImpl implements SiteContentModel {
         String siteStr = "";
         switch (k){
             case 1://点类型（可选：普通点、终止点）
-                if (rod_number > 0)
+                if (!TextUtils.isEmpty(rod_number_parent)){
+                    siteStr = res.getStringArray(R.array.list1_1)[0];
+                } else
                     siteStr = res.getStringArray(R.array.list1)[0];
                 break;
             case 2://电压等级-（选择10Kv、220V、400V）
                 siteStr = res.getStringArray(R.array.list3)[0];
                 break;
             case 3://杆号
-                siteStr = rod_number+"";
+                String parent = TextUtils.isEmpty(rod_number_parent) ? "" : rod_number_parent+"-";
+                siteStr = parent + rod_number+"";
                 break;
             case 4://是否有同杆-（选择是、否-400V、否-220V）
                 siteStr = res.getStringArray(R.array.list5)[0];
@@ -192,8 +195,8 @@ public class SiteContentModelImpl implements SiteContentModel {
             case 9://附件及定位
                 siteStr = site.getAddress();
                 break;
-            case 10://说明
-                siteStr = site.getRemark();
+            case 10://档距
+                siteStr = site.getDist();
                 break;
         }
         return siteStr;

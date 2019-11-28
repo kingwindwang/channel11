@@ -17,7 +17,6 @@ import com.example.channel.https.HttpManager;
 import com.example.channel.model.impl.MainModelImpl;
 import com.example.channel.model.impl.SiteContentModelImpl;
 import com.example.channel.model.impl.SiteDetailModelImpl;
-import com.example.channel.model.impl.UserModeImpl;
 import com.example.channel.present.SiteContentPresent;
 import com.example.channel.present.impl.SiteContentPresentImpl;
 import com.example.channel.utils.CommonUtil;
@@ -29,9 +28,7 @@ import com.example.channel.view.AddSiteView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -49,14 +46,12 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     private String add_materials = "";//补充材料
     private int rod_number = 0;//-2表示不可操作；=-1表示编辑；其他 判断当前工单里这是第几个点，如果是第二个点就传1，第三个点就传2，以此类推
     private String rod_number_parent = "";//空表示不是子节点，有表示为子节点
-    private String rod_numStr = "";
     private SiteContentPresent siteContentPresent;
     private String latitude,longtitude,addr;//维度，经度，地址
     private ArrayList<String> urls = new ArrayList<>();//图片路径
     private SiteDetailModelImpl site;
     private String task_id ="";
     private LoadDialog loadDialog;
-    private String point_id;
     private String point_id_parent;
 
     @Override
@@ -135,14 +130,20 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         bundle = new Bundle();
                         bundle.putString("content", siteContentModels.get(i).getContents());
                         bundle.putString("title", siteContentModels.get(i).getName());
+                        if (i == 3){
+                            bundle.putString("rod_number_parent", rod_number_parent);
+                            bundle.putString("rod_number", rod_number == -1 ? site.getRod_number() : rod_number +"");
+                        }
                         bundle.putInt("position", i);
                         in = new Intent(AddSiteActivity.this, SelectActivity.class);
                         in.putExtras(bundle);
                         startActivityForResult(in, App.SITE_LIST);
                         break;
                     case 1://输入框
-                    case 10://输入框
-                        if (rod_number < 0 || !TextUtils.isEmpty(rod_number_parent)){
+                    case 10://输入框（档距）
+                        if (rod_number == -2)
+                            break;
+                        if ((rod_number < 0 || !TextUtils.isEmpty(rod_number_parent)) && i != 10){
                             break;
                         }
                         bundle = new Bundle();
@@ -203,21 +204,25 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             return;
         if (requestCode == App.SITE_LIST && resultCode == App.SITE_LIST){//列表
             siteContentModelList.get(position).setContents(data.getStringExtra("content"));
-            addSiteAdapter.notifyDataSetChanged();
         }else if (requestCode == App.SITE_EDIT && resultCode == App.SITE_EDIT){//输入框
             siteContentModelList.get(position).setContents(data.getStringExtra("content"));
-            addSiteAdapter.notifyDataSetChanged();
         }else if (requestCode == App.SITE_MATERIAL && resultCode == App.SITE_MATERIAL){//材料
-            if (position == 7)
+            if (position == 7){
                 materials = data.getStringExtra("materials");
-            else
+                siteContentModelList.get(position).setContents(materials);
+            }
+            else{
                 add_materials = data.getStringExtra("materials");
+                siteContentModelList.get(position).setContents(add_materials);
+            }
         }else if (requestCode == App.SITE_PHONE && resultCode == App.SITE_PHONE){//拍照定位
             addr = data.getStringExtra("address");
             longtitude = data.getStringExtra("lont");
             latitude = data.getStringExtra("lat");
             urls = data.getStringArrayListExtra("urls");
+            siteContentModelList.get(position).setContents(addr);
         }
+        addSiteAdapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.tv_submit)

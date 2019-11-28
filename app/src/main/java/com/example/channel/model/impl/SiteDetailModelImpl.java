@@ -39,7 +39,7 @@ public class SiteDetailModelImpl implements SiteDetailModel {
     private String line2;
     private String line3;
     private String line4;
-    private String remark;
+    private String dist;//档距
 
 
     private List<SiteDetailModelImpl> siteDetailModels;
@@ -249,11 +249,11 @@ public class SiteDetailModelImpl implements SiteDetailModel {
         this.add_materials = add_materials;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getDist() {
+        return dist;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setDist(String dist) {
+        this.dist = dist;
     }
 }

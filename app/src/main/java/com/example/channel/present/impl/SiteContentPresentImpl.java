@@ -91,6 +91,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
         param.put("address", address);
         param.put("materials", getMaterialStr(materials));
         param.put("add_materials", add_materials);
+        param.put("dist", siteContentModelList.get(10).getContents());
         siteContentModel.submit(param, this);
     }
 

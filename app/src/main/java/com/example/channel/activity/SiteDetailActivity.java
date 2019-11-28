@@ -53,9 +53,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
         task_id = getIntent().getExtras().getString("task_id");
         state = getIntent().getExtras().getInt("state");
-        if (state == -1){
-            tv_submit.setVisibility(View.GONE);
-        }
+
         if (!TextUtils.isEmpty(rod_number_parent)){
             tv_add.setVisibility(View.VISIBLE);
             tv_add.setText("添加子选点");
@@ -63,6 +61,10 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
             point_id_parent = getIntent().getExtras().getString("point_id_parent");
         }else
             tv_title.setText("选点列表");
+        if (state == -1){
+            tv_add.setVisibility(View.GONE);
+            tv_submit.setVisibility(View.GONE);
+        }
         loadDialog = new LoadDialog(this);
         siteDetailPresent = new SiteDetailPresentImpl(this, new SiteDetailModelImpl());
         siteDetailPresent.showSiteDetail(task_id, point_id_parent, true);
@@ -80,6 +82,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
             tv_submit.setText("添加");
             isAdd = true;
         }
+        if (state == -1) isAdd = false;
         siteDetailAdapter = new SiteDetailAdapter(this, siteDetailModelList, isAdd);
         lvSite.setAdapter(siteDetailAdapter);
         if (state != 0){
