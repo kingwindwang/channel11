@@ -39,12 +39,15 @@ public class MaterialActivity extends BaseActivity{
     private MaterialAdapter materialAdapter;
     private int type = 1;//1:材料；2：附加材料
     private AddMaterialDialog dialog;
+    private String rod_num;//选择的杆号
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addView(R.layout.activity_material, true);
-        int rod_number = getIntent().getIntExtra("rod_number", 0);
+        Bundle bundle = getIntent().getExtras();
+        int rod_number = bundle.getInt("rod_number", 0);
+        rod_num = bundle.getString("rod_num");
         if (rod_number == -2){
             tv_submit.setVisibility(View.GONE);
             tv_submit_material.setVisibility(View.GONE);
@@ -104,6 +107,7 @@ public class MaterialActivity extends BaseActivity{
     private void goMaterial(){
         Bundle bundle = new Bundle();
         bundle.putString("materials", materials);
+        bundle.putString("rod_num", rod_num);
         Intent in = new Intent(MaterialActivity.this, MaterialAddActivity.class);
         in.putExtras(bundle);
         startActivityForResult(in, App.SITE_MATERIAL);

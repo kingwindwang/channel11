@@ -35,11 +35,12 @@ public class MaterialModelImpl implements MaterialModel {
 
     List<MaterialModelImpl> materialModels;
     @Override
-    public void findMaterialList(OnMaterialListener materialListener) {
+    public void findMaterialList(OnMaterialListener materialListener, String rod_number) {
         materialModels = new ArrayList<>();
         HttpManager httpManager = HttpManager.getInstance();
         Map<String, Object> params = new HashMap<>();
         params.put("method", "materials_list");
+        params.put("rod_number", rod_number);
         httpManager.callData(params, false, new HttpCallBack() {
             @Override
             public void onSuccess(Object success) {

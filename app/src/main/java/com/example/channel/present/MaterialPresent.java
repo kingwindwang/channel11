@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MaterialPresent {
 
-    void showMaterial(boolean isShowLoad);
+    void showMaterial(boolean isShowLoad, String rod_number);
     void submit(List<MaterialModelImpl> materialModels);
 }

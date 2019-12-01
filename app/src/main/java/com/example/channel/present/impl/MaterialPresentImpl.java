@@ -35,11 +35,11 @@ public class MaterialPresentImpl implements MaterialPresent, MaterialModel.OnMat
     }
 
     @Override
-    public void showMaterial(boolean isShowLoad) {
+    public void showMaterial(boolean isShowLoad, String rod_number) {
         this.isShowLoad = isShowLoad;
         if (isShowLoad)
             materialAddView.showProgress();
-        materialModel.findMaterialList(this);
+        materialModel.findMaterialList(this, rod_number);
     }
 
     @Override

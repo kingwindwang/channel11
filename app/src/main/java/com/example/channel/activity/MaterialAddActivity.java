@@ -39,15 +39,17 @@ public class MaterialAddActivity extends BaseActivity implements MaterialAddView
     private String materials;
     private MaterialPresentImpl materialPresent;
     private LoadDialog loadDialog;
+    private String rod_num;//选择的杆号
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addView(R.layout.activity_material_add, true);
         materials = getIntent().getStringExtra("materials");
+        rod_num = getIntent().getStringExtra("rod_num");
         loadDialog = new LoadDialog(this);
         materialPresent = new MaterialPresentImpl(this, new MaterialModelImpl(materials));
-        materialPresent.showMaterial(true);
+        materialPresent.showMaterial(true, rod_num);
 
         tv_add.setVisibility(View.VISIBLE);
         tv_add.setText("帮助");

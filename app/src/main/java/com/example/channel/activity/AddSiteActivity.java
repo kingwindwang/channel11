@@ -120,7 +120,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                     case 6:
                     case 2:
                     case 3:
-                        if (rod_number == -2)
+                        if (rod_number == -2 && i != 6)
                             break;
                         if (i == 3){
                             if (!(rod_number == 0 || siteContentModels.get(1).getContents().equals("终止点") || (site != null && site.getPoint_type().equals("起始点")))){
@@ -134,6 +134,8 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                             bundle.putString("rod_number_parent", rod_number_parent);
                             bundle.putString("rod_number", rod_number == -1 ? site.getRod_number() : rod_number +"");
                         }
+                        if (i == 6 && rod_number == -2)
+                            bundle.putString("rod_number", rod_number +"");
                         bundle.putInt("position", i);
                         in = new Intent(AddSiteActivity.this, SelectActivity.class);
                         in.putExtras(bundle);
@@ -173,9 +175,8 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                             bundle.putString("materials", add_materials);
                             bundle.putInt("type", 2);
                         }
-
                         bundle.putInt("rod_number", rod_number);
-
+                        bundle.putString("rod_num", siteContentModels.get(3).getContents());
                         in = new Intent(AddSiteActivity.this, MaterialActivity.class);
                         in.putExtras(bundle);
                         startActivityForResult(in, App.SITE_MATERIAL);

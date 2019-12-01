@@ -42,25 +42,29 @@ public class SelectActivity extends BaseActivity{
         position = getIntent().getExtras().getInt("position");
         content = getIntent().getExtras().getString("content");
         title = getIntent().getExtras().getString("title");
-        if (position == 3){
+        if (position == 3)
             rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
+        if (position == 3 || position == 6)
             rod_num = getIntent().getExtras().getString("rod_number");
-        }
+
         getList();
         tv_title.setText(title);
         adapter = new ListAdapter();
         lv_select.setAdapter(adapter);
-        lv_select.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (position == 6){
-                    if (!isSelect(contents[i], true))
-                        content += ";" + contents[i];
-                } else
-                    content = contents[i];
-                adapter.notifyDataSetChanged();
-            }
-        });
+        if (!TextUtils.isEmpty(rod_num) && rod_num.equals("-2"))
+            tv_submit.setVisibility(View.GONE);
+        else
+            lv_select.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (position == 6){
+                        if (!isSelect(contents[i], true))
+                            content += ";" + contents[i];
+                    } else
+                        content = contents[i];
+                    adapter.notifyDataSetChanged();
+                }
+            });
     }
 
     private void getList(){

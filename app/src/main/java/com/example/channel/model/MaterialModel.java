@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MaterialModel {
 
-    void findMaterialList(OnMaterialListener materialListener);
+    void findMaterialList(OnMaterialListener materialListener, String rod_number);
 
     interface OnMaterialListener{
         void materialList(List<MaterialModelImpl> materialModels);
