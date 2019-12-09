@@ -86,7 +86,7 @@ public class CameraActivity extends BaseActivity{
 			tv_submit.setVisibility(View.GONE);
 		}
 		tv_submit.setText("上传");
-		tv_add.setVisibility(View.GONE);
+		setAddView();
 		tv_add.setText("提交");
 
 		urls = getIntent().getExtras().getStringArrayList("urls");
@@ -97,30 +97,19 @@ public class CameraActivity extends BaseActivity{
 			show(2);
 			showTv();
 		}
-		// 初始化 LocationClient
-		mLocationService = new Location(this);
-		// 注册监听
-		mLocationService.registerListener(mListener);
-		LocationClientOption option = mLocationService.getOption();
-        /* 出行场景 高精度连续定位，适用于有户内外切换的场景，卫星定位和网络定位相互切换，卫星定位成功之后网络定位不再返回，
-        卫星信号断开之后一段时间才会返回网络结果*/
-		option.setLocationPurpose(LocationClientOption.BDLocationPurpose.Sport);
-		// 设置定位参数
-		mLocationService.setLocationOption(option);
+
 
 
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (mLocationService != null) {
-			mLocationService.unregisterListener(mListener);
-			mLocationService.stop();
-		}
+	private void setAddView(){
+		if (TextUtils.isEmpty(addr) || urls.size() == 0)
+			tv_add.setVisibility(View.GONE);
+		else
+			tv_add.setVisibility(View.VISIBLE);
 	}
 
-	@OnClick({R.id.tv_submit, R.id.tv_add})
+	@OnClick({R.id.tv_submit, R.id.tv_add, R.id.tv})
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_submit:
@@ -136,6 +125,10 @@ public class CameraActivity extends BaseActivity{
 				setResult(App.SITE_PHONE, in);
 				back();
 				break;
+			case R.id.tv:
+				Intent in1 = new Intent(CameraActivity.this, BaiduPoiActivity.class);
+				startActivityForResult(in1, 100);
+				break;
 		}
 
 	}
@@ -143,11 +136,20 @@ public class CameraActivity extends BaseActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		if (data == null)
+			return;
 		String url = "";
 		if (resultCode == RESULT_OK && requestCode == PHOTO_REQUEST_CAREMA){
 			url = ImageUtil.getRealFilePath(this, imageUri);
 		} else if (resultCode == RESULT_OK && requestCode == 2){
 			url = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT).get(0);
+		}else if (resultCode == 100){
+			latitude = data.getStringExtra("lat");
+			longtitude = data.getStringExtra("lon");
+			addr = data.getStringExtra("address");
+			setAddView();
+			showTv();
+			return;
 		}
 		if (!TextUtils.isEmpty(url))
 			if (select == -1)
@@ -168,7 +170,7 @@ public class CameraActivity extends BaseActivity{
 			}else
 				imageAdapter.notifyDataSetChanged();
 			if (rod_number != -2 && type == 1){
-				tv_add.setVisibility(View.VISIBLE);
+				setAddView();
 				if (!mLocationService.isStart())
 					mLocationService.start();
 			}
@@ -284,105 +286,4 @@ public class CameraActivity extends BaseActivity{
 		tv.setText(sb.toString());
 	}
 
-	/*****
-	 *
-	 * 定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
-	 *
-	 */
-	private BDAbstractLocationListener mListener = new BDAbstractLocationListener() {
-
-		/**
-		 * 定位请求回调函数
-		 *
-		 * @param location 定位结果
-		 */
-		@Override
-		public void onReceiveLocation(BDLocation location) {
-			if (null != location && location.getLocType() != BDLocation.TypeServerError &&
-					location.getLocType() != BDLocation.TypeOffLineLocationFail &&
-					location.getLocType() != BDLocation.TypeCriteriaException) {
-				latitude = location.getLatitude()+"";
-				longtitude = location.getLongitude()+"";
-				addr = location.getAddrStr();
-				showTv();
-			}
-		}
-
-		/**
-		 * 回调定位诊断信息，开发者可以根据相关信息解决定位遇到的一些问题
-		 * @param locType 当前定位类型
-		 * @param diagnosticType 诊断类型（1~9）
-		 * @param diagnosticMessage 具体的诊断信息释义
-		 */
-		@Override
-		public void onLocDiagnosticMessage(int locType, int diagnosticType,
-										   String diagnosticMessage) {
-			super.onLocDiagnosticMessage(locType, diagnosticType, diagnosticMessage);
-			StringBuffer sb = new StringBuffer(256);
-			sb.append("locType:" + locType);
-			sb.append("\n" + "诊断结果: ");
-			if (locType == BDLocation.TypeNetWorkLocation) {
-				if (diagnosticType == 1) {
-					sb.append("网络定位成功，没有开启GPS，建议打开GPS会更好" + "\n");
-					sb.append(diagnosticMessage);
-				} else if (diagnosticType == 2) {
-					sb.append("网络定位成功，没有开启Wi-Fi，建议打开Wi-Fi会更好" + "\n");
-					sb.append(diagnosticMessage);
-				}
-			} else if (locType == BDLocation.TypeOffLineLocationFail) {
-				if (diagnosticType == 3) {
-					sb.append("定位失败，请您检查您的网络状态" + "\n");
-					sb.append(diagnosticMessage);
-				}
-			} else if (locType == BDLocation.TypeCriteriaException) {
-				if (diagnosticType == 4) {
-					sb.append("定位失败，无法获取任何有效定位依据" + "\n");
-					sb.append(diagnosticMessage);
-				} else if (diagnosticType == 5) {
-					sb.append("定位失败，无法获取有效定位依据，请检查运营商网络或者Wi-Fi网络是否正常开启，尝试重新请求定位" + "\n");
-					sb.append(diagnosticMessage);
-				} else if (diagnosticType == 6) {
-					sb.append("定位失败，无法获取有效定位依据，请尝试插入一张sim卡或打开Wi-Fi重试" + "\n");
-					sb.append(diagnosticMessage);
-				} else if (diagnosticType == 7) {
-					sb.append("定位失败，飞行模式下无法获取有效定位依据，请关闭飞行模式重试" + "\n");
-					sb.append(diagnosticMessage);
-				} else if (diagnosticType == 9) {
-					sb.append("定位失败，无法获取任何有效定位依据" + "\n");
-					sb.append(diagnosticMessage);
-				}
-			} else if (locType == BDLocation.TypeServerError) {
-				if (diagnosticType == 8) {
-					sb.append("定位失败，请确认您定位的开关打开状态，是否赋予APP定位权限" + "\n");
-					sb.append(diagnosticMessage);
-				}
-			}
-			Toast.makeText(CameraActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
-		}
-	};
-
-	/**
-	 * 在网络定位结果的情况下，获取网络定位结果是通过基站定位得到的还是通过wifi定位得到的还是GPS得结果
-	 *
-	 * @param networkLocationType location.getNetworkLocationType()
-	 * @return 定位结果类型
-	 */
-	private String getNetworkLocationType(String networkLocationType){
-		String str = "";
-		switch (networkLocationType){
-			case "wf":
-				str = "wifi定位结果";
-				break;
-			case "cl":
-				str = "基站定位结果";
-				break;
-			case "ll":
-				str = "GPS定位结果";
-				break;
-			case "":
-				str = "没有获取到定位结果采用的类型";
-				break;
-		}
-		return str;
-	}
 }

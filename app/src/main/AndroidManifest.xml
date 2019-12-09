@@ -70,6 +70,7 @@
         <activity android:name=".activity.SiteDetailActivity"/>
         <activity android:name=".activity.TaskActivity"/>
         <activity android:name=".activity.HelpActivity"/>
+        <activity android:name=".activity.BaiduPoiActivity"/>
 
         <activity android:name=".activity.CameraActivity">
             <intent-filter>

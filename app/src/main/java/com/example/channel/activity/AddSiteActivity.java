@@ -113,8 +113,6 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                 Bundle bundle;
                 position = i;
                 switch (i){
-                    case 0:
-                        break;
                     case 4:
                     case 5:
                     case 6:
@@ -141,6 +139,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         in.putExtras(bundle);
                         startActivityForResult(in, App.SITE_LIST);
                         break;
+                    case 0://输入框
                     case 1://输入框
                     case 10://输入框（档距）
                         if (rod_number == -2)

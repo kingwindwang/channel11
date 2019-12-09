@@ -25,6 +25,7 @@
         android:layout_alignParentBottom="true"
         android:padding="@dimen/margin_15"
         android:background="#32000000"
+        android:hint="点击定位"
         android:textColor="@color/white" />
 
 </RelativeLayout>
