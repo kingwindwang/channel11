@@ -7,7 +7,7 @@ import java.util.List;
 public interface AddSiteView extends BaseView{
 
     void findSiteContent(List<SiteContentModelImpl> siteContentModels);
-    void submit();
+    void submit(String taskId);
     void uploadImg(String images);
     void fial(String msg);
 }

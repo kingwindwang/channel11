@@ -22,6 +22,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
     private AddSiteView siteView;
     private SiteContentModel siteContentModel;
     private boolean isShowLoad;
+    private String taskId;
 
     public SiteContentPresentImpl(AddSiteView siteView, SiteContentModel siteContentModel){
         this.siteView = siteView;
@@ -35,7 +36,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
 
     @Override
     public void submitSuccess() {
-        siteView.submit();
+        siteView.submit(TextUtils.isEmpty(taskId) ? "" : taskId);
         if (isShowLoad)
             siteView.hideProgress();
     }
@@ -75,6 +76,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
             param.put("line_name", siteContentModelList.get(1).getContents());
         }else{//添加站点
             param.put("method", "create_point");
+            taskId = task_id;
             param.put("task_id", task_id);
             param.put("point_type", siteContentModelList.get(1).getContents());
         }

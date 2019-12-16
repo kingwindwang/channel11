@@ -1,5 +1,6 @@
 package com.example.channel.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -37,6 +39,8 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
 
     @BindView(R.id.lv_add_site)
     public ListView lv_add_site;
+    @BindView(R.id.tv_diangan)
+    public ListView tv_diangan;
 
     private int position = -1;
 
@@ -255,10 +259,37 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     }
 
     @Override
-    public void submit() {
-        back();
+    public void submit(String taskId) {
+//        back();
         Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
         EventBus.getDefault().post(new MainModelImpl());
+        if (TextUtils.isEmpty(taskId))
+            back();
+        else {
+            goWeb(taskId);
+        }
+    }
+
+    private void goWeb(String taskId){
+        AlertDialog alertDialog2 = new AlertDialog.Builder(this)
+                .setTitle("请在下面的界面中完善电杆走向")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("taskId", taskId);
+                        gotoActivity(DianganActivity.class, true, bundle);
+                    }
+                })
+
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {//添加取消
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        back();
+                    }
+                })
+                .create();
+        alertDialog2.show();
     }
 
     @Override

@@ -136,14 +136,16 @@ public class CameraActivity extends BaseActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (data == null)
-			return;
 		String url = "";
 		if (resultCode == RESULT_OK && requestCode == PHOTO_REQUEST_CAREMA){
 			url = ImageUtil.getRealFilePath(this, imageUri);
 		} else if (resultCode == RESULT_OK && requestCode == 2){
+			if (data == null)
+				return;
 			url = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT).get(0);
 		}else if (resultCode == 100){
+			if (data == null)
+				return;
 			latitude = data.getStringExtra("lat");
 			longtitude = data.getStringExtra("lon");
 			addr = data.getStringExtra("address");

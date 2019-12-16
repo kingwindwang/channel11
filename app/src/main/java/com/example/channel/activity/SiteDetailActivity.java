@@ -59,8 +59,10 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
             tv_add.setText("添加子选点");
             tv_title.setText("子选点列表");
             point_id_parent = getIntent().getExtras().getString("point_id_parent");
-        }else
+        }else{
             tv_title.setText("选点列表");
+        }
+
         if (state == -1){
             tv_add.setVisibility(View.GONE);
             tv_submit.setVisibility(View.GONE);
