@@ -31,6 +31,7 @@ public class App extends Application {
     public Location location;
     public Vibrator mVibrator;
     private static SharedPreferencesHelper sharedPreferencesHelper;
+    public static String dep_name = "";
 
     @Override
     public void onCreate() {
@@ -53,6 +54,7 @@ public class App extends Application {
     public void setUser(UserModeImpl user){
         if (user == null)
             user = new UserModeImpl();
+        dep_name = user.getDep_name();
         sharedPreferencesHelper.put("user", GsonUtils.GsonString(user));
     }
 

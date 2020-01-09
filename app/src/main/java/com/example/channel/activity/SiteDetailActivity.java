@@ -54,19 +54,39 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         task_id = getIntent().getExtras().getString("task_id");
         state = getIntent().getExtras().getInt("state");
 
+        if (state == -1){//已删除,都不显示
+            isAdd = false;
+            tv_submit.setVisibility(View.GONE);
+        }else if (state == 1){//已完成
+            isAdd = false;
+            if (TextUtils.isEmpty(rod_number_parent)){//选点列表可删除
+                tv_submit.setText("删除");
+            }else{//子选点列表没操作
+                tv_submit.setVisibility(View.GONE);
+            }
+        } else {//进行中
+            isAdd = true;
+            if (TextUtils.isEmpty(rod_number_parent)){//选点列表可添加选点
+                tv_submit.setText("添加");
+            }else {//子选点列表可添加子选点
+                tv_add.setVisibility(View.VISIBLE);
+                tv_add.setText("添加子选点");
+                tv_submit.setVisibility(View.GONE);
+            }
+
+        }
+
         if (!TextUtils.isEmpty(rod_number_parent)){
-            tv_add.setVisibility(View.VISIBLE);
-            tv_add.setText("添加子选点");
             tv_title.setText("子选点列表");
             point_id_parent = getIntent().getExtras().getString("point_id_parent");
         }else{
             tv_title.setText("选点列表");
         }
 
-        if (state == -1){
-            tv_add.setVisibility(View.GONE);
-            tv_submit.setVisibility(View.GONE);
-        }
+//        if (state == -1){
+//            tv_add.setVisibility(View.GONE);
+//            tv_submit.setVisibility(View.GONE);
+//        }
         loadDialog = new LoadDialog(this);
         siteDetailPresent = new SiteDetailPresentImpl(this, new SiteDetailModelImpl());
         siteDetailPresent.showSiteDetail(task_id, point_id_parent, true);
@@ -77,14 +97,15 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
     @Override
     public void findSiteDetail(List<SiteDetailModelImpl> siteDetailModels) {
         siteDetailModelList = siteDetailModels;
-        if (siteDetailModelList.get(siteDetailModelList.size()-1).getPoint_type().equals("终止点")){
-            tv_submit.setText("删除");
-            isAdd = false;
-        }else {
-            tv_submit.setText("添加");
-            isAdd = true;
-        }
-        if (state == -1) isAdd = false;
+//        if (siteDetailModelList.get(siteDetailModelList.size()-1).getPoint_type().equals("终止点")){
+//            tv_submit.setText("删除");
+//            isAdd = false;
+//        }else {
+//            tv_submit.setText("添加");
+//            isAdd = true;
+//        }
+        if (TextUtils.isEmpty(rod_number_parent))
+            App.dep_name = siteDetailModelList.get(0).getDep_name();
         siteDetailAdapter = new SiteDetailAdapter(this, siteDetailModelList, isAdd);
         lvSite.setAdapter(siteDetailAdapter);
         if (state != 0){
@@ -153,6 +174,7 @@ public class SiteDetailActivity extends BaseActivity implements SiteDetailView {
         Bundle bundle = new Bundle();
         bundle.putString("site", s);
         bundle.putInt("rod_number", rod_number);
+        bundle.putInt("state", state);
         bundle.putString("rod_number_parent", rod_number_parent);
         gotoActivity(AddSiteActivity.class, false, bundle);
     }

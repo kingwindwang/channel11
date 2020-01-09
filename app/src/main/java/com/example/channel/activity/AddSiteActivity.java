@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -40,7 +41,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     @BindView(R.id.lv_add_site)
     public ListView lv_add_site;
     @BindView(R.id.tv_diangan)
-    public ListView tv_diangan;
+    public TextView tv_diangan;
 
     private int position = -1;
 
@@ -57,6 +58,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     private String task_id ="";
     private LoadDialog loadDialog;
     private String point_id_parent;
+    private int state = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
         addView(R.layout.activity_add_site, true);
         rod_number = getIntent().getExtras().getInt("rod_number");
         rod_number_parent = getIntent().getExtras().getString("rod_number_parent");
+        state = getIntent().getExtras().getInt("state");
         if (!TextUtils.isEmpty(rod_number_parent)){
             point_id_parent = getIntent().getExtras().getString("point_id_parent");
         }
@@ -78,10 +81,6 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                 tv_title.setText("修改选点");
             }
 
-            if (TextUtils.isEmpty(rod_number_parent)){
-                tv_add.setVisibility(View.VISIBLE);
-                tv_add.setText("子选点");
-            }
             site = GsonUtils.GsonToBean(getIntent().getExtras().getString("site"), SiteDetailModelImpl.class);
             materials = CommonUtil.getMaterials(site.getMaterials());
             add_materials = site.getAdd_materials();
@@ -90,6 +89,12 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
             addr = site.getAddress();
             getUrls();
             task_id = site.getTask_id();
+            if (TextUtils.isEmpty(rod_number_parent)){
+                tv_add.setVisibility(View.VISIBLE);
+                tv_add.setText("子选点");
+                if (!site.getPoint_type().equals("起始点"))
+                    tv_diangan.setVisibility(View.VISIBLE);
+            }
         }
         loadDialog = new LoadDialog(this);
         siteContentPresent = new SiteContentPresentImpl(this, new SiteContentModelImpl(AddSiteActivity.this, rod_number == -2 ? -1 : rod_number, rod_number_parent, site));
@@ -149,6 +154,9 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
                         if (rod_number == -2)
                             break;
                         if ((rod_number < 0 || !TextUtils.isEmpty(rod_number_parent)) && i != 10){
+                            break;
+                        }
+                        if (rod_number > 0 && i == 0){
                             break;
                         }
                         bundle = new Bundle();
@@ -242,10 +250,19 @@ public class AddSiteActivity extends BaseActivity implements AddSiteView {
     void OnSonPointList(){
         Bundle bundle = new Bundle();
         bundle.putString("task_id", task_id);
-        bundle.putInt("state", rod_number < 0 ? -1 : 0);
+        bundle.putInt("state", state);
         bundle.putString("rod_number_parent", site.getRod_number());
         bundle.putString("point_id_parent", site.getPoint_id());
         gotoActivity(SiteDetailActivity.class, false, bundle);
+    }
+
+    @OnClick(R.id.tv_diangan)
+    void OnGoDianGan(){
+        if (TextUtils.isEmpty(task_id))
+            return;
+        Bundle bundle = new Bundle();
+        bundle.putString("taskId", task_id);
+        gotoActivity(DianganActivity.class, false, bundle);
     }
 
     private int rodNum(){

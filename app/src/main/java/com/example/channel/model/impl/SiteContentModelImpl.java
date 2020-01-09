@@ -123,10 +123,10 @@ public class SiteContentModelImpl implements SiteContentModel {
     }
 
     private String getContent(int i){
-        if (i == 0){
-            UserModeImpl user = App.application.getUser();
-            return user.getDep_name();
-        }
+//        if (i == 0){
+//            UserModeImpl user = App.application.getUser();
+//            return user.getDep_name();
+//        }
         if (rod_number == -1){//修改和查询
             return getSite(i);
         }else {//添加
@@ -138,6 +138,9 @@ public class SiteContentModelImpl implements SiteContentModel {
         Resources res =context.getResources();
         String siteStr = "";
         switch (k){
+            case 0:
+                siteStr = App.dep_name;
+                break;
             case 1://点类型（可选：普通点、终止点）
                 if (!TextUtils.isEmpty(rod_number_parent)){
                     siteStr = res.getStringArray(R.array.list1_1)[0];
@@ -167,8 +170,11 @@ public class SiteContentModelImpl implements SiteContentModel {
     private String getSite(int k){
         String siteStr = "";
         switch (k){
+            case 0://施工班组
+                siteStr = App.dep_name;
+                break;
             case 1://点类型（可选：普通点、终止点）
-                if (!site.getRod_number().equals("0"))
+//                if (!site.getRod_number().equals("0"))
                     siteStr = site.getPoint_type();
                 break;
             case 2://电压等级-（选择10Kv、220V、400V）

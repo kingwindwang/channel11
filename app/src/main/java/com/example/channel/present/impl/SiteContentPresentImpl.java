@@ -72,7 +72,7 @@ public class SiteContentPresentImpl implements SiteContentPresent, SiteContentMo
             param.put("user_id", user.getUser_id());
             param.put("user_name", user.getName());
             param.put("dep_id", user.getDep_id());
-            param.put("dep_name", user.getDep_name());
+            param.put("dep_name", siteContentModelList.get(0).getContents());
             param.put("line_name", siteContentModelList.get(1).getContents());
         }else{//添加站点
             param.put("method", "create_point");

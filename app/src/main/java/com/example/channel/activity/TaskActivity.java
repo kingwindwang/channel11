@@ -92,6 +92,7 @@ public class TaskActivity extends BaseActivity{
     void OnAddSite(){
         Bundle bundle = new Bundle();
         bundle.putInt("rod_number", 0);
+        bundle.putInt("state", -1);
         bundle.putString("rod_number_parent", "");
         gotoActivity(AddSiteActivity.class, false, bundle);
     }

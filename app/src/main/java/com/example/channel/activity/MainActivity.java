@@ -67,15 +67,13 @@ public class MainActivity extends BaseActivity implements MainView {
     void OnAddSite(){
         Bundle bundle = new Bundle();
         bundle.putInt("rod_number", 0);
+        bundle.putInt("state", -1);
         bundle.putString("rod_number_parent", "");
         gotoActivity(AddSiteActivity.class, false, bundle);
     }
 
     @OnClick(R.id.tv_login_out)
     void LoginOut(){
-//        Bundle bundle = new Bundle();
-//        bundle.putString("taskId", "30");
-//        gotoActivity(DianganActivity.class, false, bundle);
         AlertDialog alertDialog2 = new AlertDialog.Builder(this)
                 .setTitle("是否退出登录")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮

@@ -17,6 +17,8 @@
         android:layout_height="45dp"
         android:textColor="@color/white"
         android:textSize="@dimen/size_15"
+        android:text="完善电杆走向"
+        android:gravity="center"
         android:background="@color/text_blue"
         android:layout_alignParentBottom="true"
         android:visibility="gone"/>
